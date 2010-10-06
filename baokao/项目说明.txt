@@ -1,0 +1,17 @@
+项目说明：
+
+项目创建人：蓝枫叶
+QQ:83429645
+E-mail:zibin_5257@163.com
+电话：15940442002
+www.cn-024.cn
+
+前台访问：
+
+http://域名/index.php
+
+后台访问：
+http://域名/index.php/lfy
+
+用户名：admin
+密码：admin

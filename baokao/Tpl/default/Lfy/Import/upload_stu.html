@@ -1,0 +1,37 @@
+<style>
+td{font-size:10pt;line-height:140%}
+body{font-size:10pt;line-height:140%;margin: 0px;}
+
+a:link          { color: #000000; text-decoration: none }
+a:visited       { color: #000000; text-decoration: none }
+a:active        { color: #FF0000; text-decoration: none }
+a:hover         { color: #0033CC; text-decoration: underline}
+</style>
+<load file="__ROOT__/js/jquery.js" />
+<script type="text/javascript">
+    $(function(){
+        $('#b1').click(function(){
+            var img_url=$('#cp_img').val();
+            if(img_url==''){
+                alert('请正确选择上传的文件！');
+            }
+            else
+                {
+                    $("form").submit();  //进行表单提交
+                }
+        });
+
+
+
+            
+        
+    });
+    
+</script>
+<body>
+    <form id="upload" method='post' action="{:U('import/upload_stu')}" enctype="multipart/form-data">
+        <input type="file" name="cp_img" id="cp_img" value="" width="15" />
+        <input type="button" value="上传文件" id="b1" name="b1" />
+    </form>
+</body>
+</html>

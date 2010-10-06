@@ -1,0 +1,45 @@
+td{font-size:13px;line-height:140%}
+body{font-size:13px;line-height:140%}
+
+a:link          { color: #133db6; text-decoration: none }
+a:visited       { color: #133db6; text-decoration: none }
+a:active        { color: #133db6; text-decoration: none }
+a:hover         { color: #133db6; text-decoration: underline}
+
+.kongxi{
+    padding-top: 10px;
+    color:red;
+    clear: both;
+}
+
+.main{
+    margin: 2px auto;
+}
+.bk_border{
+    width:400px;
+    height: auto;
+    border: 1px #133db6 solid;
+    margin-top: 100px;
+    text-align: left;
+}
+.bk_title{
+    line-height: 40px;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+}
+.bk_file{
+    line-height: 30px;
+    margin-left: 90px;
+}
+.pop{
+    color:red;
+}
+.line{
+    border-top: 1px #00ccff solid;
+}
+
+.banquan{
+    margin-top: 10px;
+    clear: both;
+}

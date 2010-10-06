@@ -1,0 +1,45 @@
+<include file="Public:header" />
+<div class="bk_border" style="margin-top: 15px;width:800px;">
+    <div class="bk_title">查&nbsp;询&nbsp;结&nbsp;果</div>
+    <div class="bk_file" style="color:blue;">以下是您的信息：</div>
+    <div class="bk_file">学号：{$stu_no}</div>
+    <div class="bk_file">姓名：{$stu_name}</div>
+    <div class="bk_file">性别：{$stu_sex}</div>
+    <div class="bk_file">系别：{$depart_name}</div>
+    <div class="bk_file">专业班级：{$stu_class}</div>
+    <div class="bk_file">报考科目：{$kemu_name}</div>
+    <div class="bk_file">限制报考次数：<span style="color:red;font-weight: bold;">{$bk_num}</span>次</div>
+    <div class="bk_file">剩余次数：<span style="color:blue;font-weight: bold;">{$sy_num}</span>次</div>
+    <div class="kongxi"></div>
+    <div class="line"></div>
+    <div class="bk_file" style="color:blue;">您所有的报考信息：</div>
+    <foreach name="bk_list" item="bkl">
+        <div class="bk_file">{$bkl.sb_input_time}-{$bkl.pc_name}-{$bkl.pc_time}-{$bkl.pc_address}</div>
+    </foreach>
+    <div class="line"></div>
+    <div class="bk_file" style="color:blue;">您的合格信息：(存在合格信息则代表您已经合格)</div>
+    <foreach name="hg_list" item="hgl">
+        <div class="bk_file">批次：{$hgl.pc_name}-地点：{$hgl.pc_address}-考试时间：{$hgl.pc_time}-分数：{$hgl.hg_num}</div>
+    </foreach>
+    <div class="line"></div>
+    <div class="bk_file" style="color:blue;">您的违纪信息：</div>
+    <foreach name="wj_list" item="wjl">
+        <div class="bk_file">批次：{$wjl.pc_name}-地点：{$hgl.pc_address}-考试时间：{$hgl.pc_time}-
+        <?php
+        if($wjl['off']=='f'){
+        echo '不允许报考';
+        }else{
+            echo '允许报考';
+        }
+        ?>
+        </div>
+    </foreach>
+    
+    <div class="kongxi"></div>
+    <div class="kongxi"></div>
+    <div class="bk_file">[<a href="{:U('index/index')}"><b>返回首页</b></a>]</div>
+    <div class="kongxi"></div>
+
+</div>
+
+<include file="Public:ender" />

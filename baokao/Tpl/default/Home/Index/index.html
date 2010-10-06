@@ -1,0 +1,14 @@
+<include file="Public:header" />
+<load href="__ROOT__/js/index.js" />
+<div class="bk_border">
+    <div class="bk_title">{$kemu_name}报考管理系统</div>
+    <div class="kongxi" id="pop"></div>
+    <div class="bk_file"><label for="stu_no">学　号：</label><input id="stu_no" type="text" maxlength="20" size="20" /><span class="pop" id="no_pop"></span></div>
+    <div class="bk_file"><label for="stu_name">姓　名：</label><input id="stu_name" type="text" maxlength="6" size="20" /><span class="pop" id="name_pop"></span></div>
+    <div class="bk_file"><label for="yz_num">验证码：</label><input id="yz_num" type="text" maxlength="4" size="10" />{//服务器端验证session为verify的md5加密值}
+<img src="{:U('Public/view_key')}" border="0" id="yz_img_num" style="margin-bottom:-5px" alt="看不清！点击刷新验证码！" /><span class="pop" id="yz_pop"></span></div>
+    <div class="kongxi"></div>
+    <div class="bk_title"><input type="button" id="tijiao" value="确认报考" />　<input type="button" id="chaxun" value="查询信息" /></div>
+    <div class="kongxi"></div>
+</div>
+<include file="Public:ender" />

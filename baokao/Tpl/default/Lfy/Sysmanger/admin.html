@@ -1,0 +1,54 @@
+<include file="Public:header" />
+<script type="text/javascript">
+    $(function(){
+         $('.del_admin').click(function(){
+            var admin_id=this.id;
+            $('#pop').load("{:U('sysmanger/del_admin')}",{"admin_id":admin_id},function(){
+                $("#admin_"+admin_id).remove();
+//                  $("#admin_"+admin_id).html('');
+            });
+        });
+
+        $('#pop').ajaxStart(function(){
+            $('#pop').html('<font color="red">数据请求中...请稍后...</font>');
+        });
+
+    });
+   
+</script>
+<div style="margin-top: 30px;margin-left: 20px;">
+    <b>管理用户管理：</b>
+    <br>
+    <a id="pop"></a>
+    <br>
+    <table width="500" border="1" cellpadding="0" cellspacing="0" align="left" style="border-collapse:collapse" bordercolor="#000000">
+        <tr>
+            <td align="center">
+                ID编号
+            </td>
+            <td align="center">
+                管理员名称
+            </td>
+            
+            <td align="center">
+                操&nbsp;&nbsp;&nbsp;&nbsp;作
+            </td>
+        </tr>
+        <foreach name="list" item="vo">
+<!--             <div id="admin_{$vo.user_id}">-->
+                <tr id="admin_{$vo.user_id}">
+                    <td align="center">
+                        {$vo.user_id}
+                    </td>
+                    <td align="center">
+                        {$vo.user_name}
+                    </td>
+                    <td align="center">
+                        [<a href="#" class="del_admin" id="{$vo.user_id}">删&nbsp;&nbsp;除</a>]
+                    </td>
+<!--                </tr>-->
+             </div>
+        </foreach>
+    </table>
+</div>
+<include file="Public:ender" />

@@ -1,0 +1,45 @@
+<include file="Public:header" />
+<script type="text/javascript">
+    $(function(){
+
+        $('#tijiao').click(function(){
+            var km_name=$('#kmname').val();
+            if(km_name==''){
+                $('#pop').html('名称必须填写！');
+                $('#kmname').focus();
+            }else{
+                $.post("{:U('config/save_kmname')}",{
+                    "km_name":km_name
+                },function(data){chuli(data.data);},'json');
+            }
+        });
+
+        {/*进行服务器数据返回的处理*/}
+        function chuli(data){
+            switch(data){
+                case 0:
+                    $('#pop').html('名称必须填写！');
+                    $('#kmname').focus();
+                    break;
+                case 1:
+                    $('#pop').html('新名称设置成功！');
+                    break;
+                case 2:
+                    $('#pop').html('名称无改变，无需保存');
+                    break;
+            }
+        }
+
+        $('#pop').ajaxStart(function(){
+            $('#pop').html('<img src="__ROOT__/images/loading.gif" border="0"><font color="red">数据请求中...请稍后...</font>');
+        });
+
+    });
+   
+</script>
+<div style="margin-top: 30px;margin-left: 20px;">
+    <b>报考管理系统名称设置：</b><br />
+    <span id="pop" style="color:red;"></span><br />
+    名称：<input type="text" id="kmname" value="{$km_name}" size="20px" maxlength="20" />报考管理系统&nbsp;&nbsp;<input type="button" id="tijiao" value="保存" />
+</div>
+<include file="Public:ender" />

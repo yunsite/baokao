@@ -21,6 +21,7 @@
             switch(data){
                 case 0:
                     $('#pop').html('系统参数传递错误，请刷新页面后重新修改！');
+                    $('#bk_num').attr('disabled','disabled');
                     break;
                 case 1:
                     $('#pop').html('限制报考次数项必须填写数字！');
@@ -31,6 +32,7 @@
                     break;
                 case 3:
                     $('#pop').html('新的限制次数保存成功！');
+                    $('#bk_num').attr('disabled','disabled');
                     break;
             }
         }

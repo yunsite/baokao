@@ -1,0 +1,54 @@
+<include file="Public:header" />
+<script type="text/javascript">
+    $(function(){
+
+        $('#tijiao').click(function(){
+            var bk_num=$('#bk_num').val();
+            var bk_id=$('#bk_id').val();
+            if(bk_num==''){
+                $('#pop').html('限制报考次数必须填写！');
+                $('bk_num').focus();
+            }else{
+                $.post("{:U('config/save_bknum')}",{
+                    "bk_num":bk_num,
+                    "bk_id":bk_id
+                },function(data){chuli(data.data);},'json');
+            }
+        });
+
+        {/*进行服务器数据返回的处理*/}
+        function chuli(data){
+            switch(data){
+                case 0:
+                    $('#pop').html('系统参数传递错误，请刷新页面后重新修改！');
+                    $('#bk_num').focus();
+                    break;
+                case 1:
+                    $('#pop').html('限制报考次数项必须填写数字！');
+                    break;
+                case 2:
+                    $('#pop').html('限制次数无改变，无需保存');
+                    break;
+                case 3:
+                    $('#pop').html('新的限制次数保存成功！');
+                    break;
+            }
+        }
+
+        $('#pop').ajaxStart(function(){
+            $('#pop').html('<img src="__ROOT__/images/loading.gif" border="0"><font color="red">数据请求中...请稍后...</font>');
+        });
+
+    });
+
+</script>
+<div style="margin-top: 30px;margin-left: 20px;">
+    <b>报考次数编辑：</b><br /><br />
+    【<a href="{:U('config/set_bknum')}">返回</a>】<br />
+    <span id="pop" style="color:red;"></span><br />
+    入学年级：{$stu_join}(该项无法修改，如需新增新年级请增加一个新增一项)<br /><br />
+    限制次数：<input type="text" size="5" id="bk_num" value="{$bk_num}" maxlength="4" /><br /><br />
+    <input type="hidden" value="{$bk_id}" id="bk_id" />
+    <input type="button" value="保存" id="tijiao" />
+</div>
+<include file="Public:ender" />

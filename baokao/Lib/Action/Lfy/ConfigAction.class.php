@@ -62,6 +62,49 @@ class ConfigAction extends Action{
          $this->assign('bk_list', $Bk_num->order('stu_join')->select());
          $this->display();
      }
+
+     /**
+      * 报考次数修改
+      */
+     public function  edit_bknum(){
+         $bk_id=addslashes($_GET['id']);
+         //判断是否传递合法的id,必须为数值型
+         if(!is_numeric($bk_id)){
+             $this->redirect('config/set_bknum');
+             exit();
+         }
+
+         $Bk_num=M('Bk_num');
+         $this->assign($Bk_num->where("bk_id={$bk_id}")->find());
+
+         $this->display();
+     }
+
+     /**
+      * 对修改的报考次数进行保存
+      */
+     function save_bknum(){
+         $bk_num=addslashes($_POST['bk_num']);
+         $bk_id=addslashes($_POST['bk_id']);
+         //检测传递的$bk_id是否符合系统要求，必须为数值
+         if(!is_numeric($bk_id)){
+             $this->ajaxReturn(0);
+             exit ();
+         }
+         //检测传递的$bk_num是否符合系统要求，必须为数值
+         if(!is_numeric($bk_num)){
+             $this->ajaxReturn(1);
+             exit ();
+         }
+
+         //开始进行修改
+         $Bk_num=M('Bk_num');
+         if($Bk_num->where("bk_id={$bk_id}")->setField('bk_num',$bk_num)){
+             $this->ajaxReturn(3);  //保存成功
+         }else{
+             $this->ajaxReturn(2);  //无修改
+         }
+     }
     
 }
 ?>

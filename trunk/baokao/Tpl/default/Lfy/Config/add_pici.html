@@ -1,0 +1,106 @@
+<include file="Public:header" />
+<script type="text/javascript">
+    $(function(){
+        $('#tijiao').click(function(){
+            var pc_name=$('#pc_name').val();
+            var pc_join=$('#pc_join').val();
+            var pc_num=$('#pc_num').val();
+            var pc_time=$('#pc_time').val();
+            var pc_address=$('#pc_address').val();
+            var pc_beizhu=$('#pc_beizhu').val();
+            if(check(pc_name,pc_join,pc_num)){
+                $.post("{:U('config/save_add_pici')}",{
+                    'pc_name':pc_name,
+                    'pc_join':pc_join,
+                    'pc_num':pc_num,
+                    'pc_time':pc_time,
+                    'pc_address':pc_address,
+                    'pc_beizhu':pc_beizhu
+                },function(data){chuli(data.data);},'json');
+            }
+        });
+
+        {/*数据合法性检测函数*/}
+        function check(pc_name,pc_join,pc_num){
+            if(pc_name==''){
+                $('#pop').html('批次名称必须填写！');
+                $('#pc_name').focus();
+                return false;
+            }
+            if(pc_join==''){
+                $('#pop').html('针对年级必须填写！');
+                $('#pc_join').focus();
+                return false;
+            }
+            if(pc_num==''){
+                $('#pop').html('报考人数必须填写！');
+                $('#pc_num').focus();
+                return false;
+            }
+            return true;
+            
+        }
+
+        {/*进行服务器数据返回的处理*/}
+        function chuli(data){
+            switch(data){
+                case 0:
+                    $('#pop').html('前三项必须全部填写！');
+                    $('#pc_name').focus();
+                    break;
+                case 1:
+                    $('#pop').html('报考人数填写错误，必须填写整数！');
+                    $('#pc_num').focus();
+                    break;
+                case 2:
+                    $('#pop').html('新的报考批次添加成功！如需继续添加，请点击上部的[增加]按钮！');
+                    $('#pc_name').attr('disabled','disabled');
+                    $('#pc_join').attr('disabled','disabled');
+                    $('#pc_num').attr('disabled','disabled');
+                    $('#pc_time').attr('disabled','disabled');
+                    $('#pc_address').attr('disabled','disabled');
+                    $('#pc_beizhu').attr('disabled','disabled');
+                    $('#pc_name').val('');
+                    $('#pc_join').val('');
+                    $('#pc_num').val('');
+                    $('#pc_time').val('');
+                    $('#pc_address').val('');
+                    $('#pc_beizhu').val('');
+                    break;
+                case 3:
+                    $('#pop').html('系统错误！请返回刷新后重新添加！');
+                    $('#pc_name').attr('disabled','disabled');
+                    $('#pc_join').attr('disabled','disabled');
+                    $('#pc_num').attr('disabled','disabled');
+                    $('#pc_time').attr('disabled','disabled');
+                    $('#pc_address').attr('disabled','disabled');
+                    $('#pc_beizhu').attr('disabled','disabled');
+                    break;
+            }
+        }
+
+        $('#pop').ajaxStart(function(){
+            $('#pop').html('<img src="__ROOT__/images/loading.gif" border="0"><font color="red">数据请求中...请稍后...</font>');
+        });
+
+    });
+
+</script>
+<div style="margin-top: 30px;margin-left: 20px;">
+    <b>增加一个新的报考批次：</b><br /><br />
+    【<a href="{:U('config/add_pici')}">增加</a>】【<a href="{:U('config/set_pici')}">返回</a>】<br />
+    <span id="pop" style="color:red;"></span><br />
+    批次名称：<input type="text" id="pc_name" value="" maxlength="40" size="15" /><br />
+    针对年级：<input type="text" id="pc_join" value="" maxlength="40" size="15" />(必须和入学年级完全一致，否则获取不到批次数据)<br />
+    报考人数：<input type="text" id="pc_num" value="" maxlength="10" size="15" />(必须填写整数)<br />
+    考试时间：<input type="text" id="pc_time" value="" maxlength="40" size="15" /><br />
+    考试地点：<input type="text" id="pc_address" value="" maxlength="40" size="15" /><br />
+    备注信息：
+    <br />
+    <textarea cols="30" rows="5" id="pc_beizhu"></textarea>
+
+
+    <br /><br />
+    <input type="button" value="保存" id="tijiao" />
+</div>
+<include file="Public:ender" />

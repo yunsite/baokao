@@ -100,7 +100,13 @@ class ConfigAction extends Action{
          //开始进行修改
          $Bk_num=M('Bk_num');
          if($Bk_num->where("bk_id={$bk_id}")->setField('bk_num',$bk_num)){
+             //获取修改成功的报考次数项的入学年级
+            $stu_join=$Bk_num->where("bk_id={$bk_id}")->getField('stu_join');
+            //清理该入学年级的缓存信息
+            S("bk{$stu_join}",null);
+
              $this->ajaxReturn(3);  //保存成功
+
          }else{
              $this->ajaxReturn(2);  //无修改
          }
@@ -117,21 +123,17 @@ class ConfigAction extends Action{
              $this->ajaxReturn(0);
              exit ();
          }
-
          $Bk=M('Bk_num');
          if($Bk->where("stu_join='{$stu_join}'")->count()>0){
              $this->ajaxReturn(1);
              exit();
          }
-
          $data['bk_num']=$bk_num;
          $data['stu_join']=$stu_join;
          if($Bk->add($data)){
              $this->ajaxReturn(2);
              
          }
-
-
      }
     
 }

@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK IT ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2009 http://thinkphp.cn All rights reserved.
+// | Copyright (c) 2010 http://thinkphp.cn All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
 // +----------------------------------------------------------------------
@@ -60,7 +60,7 @@ if(!IS_CLI) {
     define('URL_COMPAT',      3);   // 兼容模式
 }
 //  版本信息
-define('THINK_VERSION', '2.0');
+define('THINK_VERSION', '2.1RC1');
 //[/RUNTIME]
 // 记录内存初始使用
 if(MEMORY_LIMIT_ON) {

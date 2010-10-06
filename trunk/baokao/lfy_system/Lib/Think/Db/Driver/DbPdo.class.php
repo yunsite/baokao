@@ -71,6 +71,10 @@ class DbPdo extends Db{
             }
             // 因为PDO的连接切换可能导致数据库类型不同，因此重新获取下当前的数据库类型
             $this->dbType = $this->_getDsnType($config['dsn']);
+            if(in_array($this->dbType,array('MSSQL','ORACLE','IBASE','OCI'))) {
+                // 由于PDO对于以上的数据库支持不够完美，所以屏蔽了 如果仍然希望使用PDO 可以注释下面一行代码
+                throw_exception('由于目前PDO暂时不能完美支持'.$this->dbType.' 请使用官方的'.$this->dbType.'驱动');
+            }
             $this->linkID[$linkNum]->exec('SET NAMES '.C('DB_CHARSET'));
             // 标记连接成功
             $this->connected    =   true;
@@ -288,11 +292,9 @@ class DbPdo extends Db{
                       ."') b where table_name='".strtoupper($tableName)."' and a.column_name=b.column_name(+)";
                     break;
                 case 'PGSQL':
-                    $sql   = 'select fields_name as "Field",fields_type as "Type",fields_not_null as "Null",fields_key_name as "Key",fields_default as "Default",fields_default as "Extra" from table_msg('.$tableName.');';
+                    $sql   = 'select fields_name as "Name",fields_type as "Type",fields_not_null as "Null",fields_key_name as "Key",fields_default as "Default",fields_default as "Extra" from table_msg('.$tableName.');';
                     break;
                 case 'IBASE':
-                    // 暂时不支持
-                    throw_exception(L('_NOT_SUPPORT_DB_').':IBASE');
                     break;
                 case 'MYSQL':
                 default:
@@ -303,6 +305,7 @@ class DbPdo extends Db{
         $info   =   array();
         if($result) {
             foreach ($result as $key => $val) {
+                $val['Name'] = isset($val['name'])?$val['name']:$val['Name'];
                 $name= strtolower(isset($val['Field'])?$val['Field']:$val['Name']);
                 $info[$name] = array(
                     'name'    => $name ,
@@ -393,22 +396,12 @@ class DbPdo extends Db{
                     }
                     break;
                 case 'MSSQL':
-                    $limit	=	explode(',',$limit);
-                    if(count($limit)>1) {
-                        $this->offset	=	$limit[0];
-                        $limitStr	=	' TOP '.$limit[1].' ';
-                    }else{
-                        $this->offset	=0;
-                        $limitStr = ' TOP '.$limit[0].' ';
-                    }
                     break;
                 case 'IBASE':
                     // 暂时不支持
                     break;
                 case 'ORACLE':
                 case 'OCI':
-                    $limit = explode(',',$limit);
-                    $limitStr = "(numrow>" . $limit[0] . ") AND (numrow<=" . $limit[1] . ")";
                     break;
                 case 'MYSQL':
                 default:

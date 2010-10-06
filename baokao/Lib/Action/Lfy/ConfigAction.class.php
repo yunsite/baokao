@@ -193,6 +193,36 @@ class ConfigAction extends Action{
          }
 
      }
+
+     /**
+      * 保存新增加的批次信息
+      */
+     function save_add_pici(){
+         $data['pc_name']=addslashes($_POST['pc_name']);
+         $data['pc_join']=addslashes($_POST['pc_join']);
+         $data['pc_num']=addslashes($_POST['pc_num']);
+         $data['pc_time']=addslashes($_POST['pc_time']);
+         $data['pc_address']=addslashes($_POST['pc_address']);
+         $data['pc_beizhu']=addslashes($_POST['pc_beizhu']);
+         if($data['pc_name']=='' || $data['pc_join']=='' || $data['pc_time']==''){
+             $this->ajaxReturn(0);    //有一项或几项为空
+             exit();
+         }
+         if(!is_numeric($data['pc_num'])){
+             //判断限制人数是否为数值型
+             $this->ajaxReturn(1);
+             exit();
+         }
+
+         $Pc=M('Pici');
+         if($Pc->add($data)){
+             //添加成功
+             $this->ajaxReturn(2);
+         }else{
+             //添加失败
+             $this->ajaxReturn(3);
+         }
+     }
     
 }
 ?>

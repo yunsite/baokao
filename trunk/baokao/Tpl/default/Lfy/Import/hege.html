@@ -1,0 +1,17 @@
+<include file="Public:header" />
+<div style="margin-top: 30px;margin-left: 20px;">
+    <b>合格数据导入：</b><br /><br />
+    <b>Excel文件上传：</b>
+<iframe style="overflow-y:hidden" valign="middle" height="23" frameborder="0" width="330" id="upload_iframe" scrolling="no" src="{:U('import/upload_stu')}" framespacing="0" frameborder="no"></iframe>*只能上传xls文件
+    <br />(请不要修改模板的文件名)<br /><br />
+    <a href="{:U('import/import_hege')}"><span class="button1">开始导入</span></a>
+    <div style="color:red;margin-top: 20px;">说明：必须使用系统指定的数据模板进行上传，上传成功后点击导入即可进行导入，学号和批次重复的数据将自动跳过！注意导入操作是不可逆转的
+    <br />
+    欲导入合格名单必须具有批次的编号，可在报考管理的批次管理中查询到。
+    </div>
+
+    <br />
+    <br />
+    【<a href="__ROOT__/mb/stu_hege.xls">EXCEL导入模板下载</a>】
+</div>
+<include file="Public:ender" />

@@ -109,21 +109,22 @@ class IndexAction extends Action{
         //检测是否存在该学生入学年级的批次信息缓存信息
         if(!S('pc'.$stu_info['stu_join'])){
             $Pici=M('Pici');
-            //判断是否存在报考
-            if($Pici->where("pc_join='{$stu_info['stu_join']}' and pc_off='t'")->count()>0){
-                if(!S('pc'.$stu_info['stu_join'])){
-                    //将年级的批次信息缓存1个小时  pc+入学年纪
-                    S('pc'.$stu_info['stu_join'],$Pici->where("pc_join='{$stu_info['stu_join']}' and pc_off='t'")->find(),3600);
-                }
-            }else{
-                $_SESSION['verify']=md5('lfy5fdfd456yhty');
-                $this->ajaxReturn(5);   //报考信息不存在或者报考尚未开始
-                exit();
-            }
+            S('pc'.$stu_info['stu_join'],$Pici->where("pc_join='{$stu_info['stu_join']}'")->find(),3600);
         }
 
         //从缓存中读取该学生所在入学年级的批次信息
         $pc_info=S('pc'.$stu_info['stu_join']);
+
+        //判断是否存在报考
+        if($pc_info['pc_off']!='t'){
+            $_SESSION['verify']=md5('lfy5fdfd456yhty');
+            $this->ajaxReturn(5);   //报考信息不存在或者报考尚未开始
+            exit();
+        }
+
+
+
+        
 
         //检测是否存在该学生所在年级每人限制报考的次数  不存在
         if(!S('bk'.$stu_info['stu_join'])){

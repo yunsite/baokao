@@ -191,3 +191,19 @@ CREATE TABLE IF NOT EXISTS `lfy_stu_weiji` (
 -- 转存表中的数据 `lfy_stu_weiji`
 --
 
+--
+-- 表的结构 `lfy_stu_miankao`
+--
+
+CREATE TABLE IF NOT EXISTS `lfy_stu_miankao` (
+  `mk_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '编号',
+  `stu_no` varchar(20) COLLATE utf8_bin NOT NULL COMMENT '学生学号',
+  `beizhu` text COLLATE utf8_bin NOT NULL COMMENT '备注',
+  `mk_time` int(11) NOT NULL COMMENT '免考时间',
+  PRIMARY KEY (`mk_id`),
+  KEY `stu_no` (`stu_no`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
+
+--
+-- 转存表中的数据 `lfy_stu_miankao`
+--

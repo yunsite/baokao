@@ -1,0 +1,57 @@
+<include file="Public:header" />
+<script type="text/javascript">
+    $(function(){
+        $('#tijiao').click(function(){
+            var bk_num=$('#bk_num').val();
+            var stu_join=$('#stu_join').val();
+            if(bk_num=='' || stu_join==''){
+                $('#pop').html('入学年级和限制报考次数必须填写！');
+                $('#stu_join').focus();
+            }else{
+                $.post("{:U('config/save_add_bknum')}",{
+                    "bk_num":bk_num,
+                    "stu_join":stu_join
+                },function(data){chuli(data.data);},'json');
+            }
+        });
+
+        {/*进行服务器数据返回的处理*/}
+        function chuli(data){
+            switch(data){
+                case 0:
+                    $('#pop').html('限制报考次数项必须填写数字！');
+                    $('#bk_num').focus();
+                    break;
+                case 1:
+                    $('#pop').html('该入学年级的报考次数限制已经存在，如需修改请[返回]修改！');
+                    $('#stu_join').focus();
+                    break;
+                case 2:
+                    $('#pop').html('新的报考次数限制项添加成功！如需继续添加请点击上部的[增加]按钮');
+                    $('#bk_num').attr('disabled','disabled');
+                    $('#stu_join').attr('disabled','disabled');
+                    break;
+                case 3:
+                    $('#pop').html('系统错误！请返回刷新后重新添加！');
+                    $('#bk_num').attr('disabled','disabled');
+                    $('#stu_join').attr('disabled','disabled');
+                    break;
+            }
+        }
+
+        $('#pop').ajaxStart(function(){
+            $('#pop').html('<img src="__ROOT__/images/loading.gif" border="0"><font color="red">数据请求中...请稍后...</font>');
+        });
+
+    });
+
+</script>
+<div style="margin-top: 30px;margin-left: 20px;">
+    <b>增加一个新的报考次数项：</b><br /><br />
+    【<a href="{:U('config/add_bknum')}">增加</a>】【<a href="{:U('config/set_bknum')}">返回</a>】<br />
+    <span id="pop" style="color:red;"></span><br />
+    入学年级：<input type="text" size="5" id="stu_join" value="" />(该项必须和学生的入学年级完全一致，否则获取不到年级报考次数数据)<br /><br />
+    限制次数：<input type="text" size="5" id="bk_num" value="{$bk_num}" maxlength="4" /><br /><br />
+    <input type="button" value="保存" id="tijiao" />
+</div>
+<include file="Public:ender" />

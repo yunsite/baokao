@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK IT ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2009 http://thinkphp.cn All rights reserved.
+// | Copyright (c) 2010 http://thinkphp.cn All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
 // +----------------------------------------------------------------------
@@ -97,7 +97,11 @@ abstract class Action extends Think
      */
     protected function display($templateFile='',$charset='',$contentType='text/html')
     {
-        $this->view->display($templateFile,$charset,$contentType);
+        if(false === $templateFile) {
+            $this->showTrace();
+        }else{
+            $this->view->display($templateFile,$charset,$contentType);
+        }
     }
 
     /**
@@ -174,6 +178,10 @@ abstract class Action extends Think
      */
     protected function get($name)
     {
+        return $this->view->get($name);
+    }
+
+    public function __get($name) {
         return $this->view->get($name);
     }
 
@@ -353,7 +361,7 @@ abstract class Action extends Think
     private function _dispatch_jump($message,$status=1,$ajax=false)
     {
         // 判断是否为AJAX返回
-        if($ajax || $this->isAjax()) $this->ajaxReturn('',$message,$status);
+        if($ajax || $this->isAjax()) $this->ajaxReturn($ajax,$message,$status);
         // 提示标题
         $this->assign('msgTitle',$status? L('_OPERATION_SUCCESS_') : L('_OPERATION_FAIL_'));
         //如果设置了关闭窗口，则提示完毕后自动关闭窗口
@@ -378,6 +386,13 @@ abstract class Action extends Think
         if(C('LOG_RECORD')) Log::save();
         // 中止执行  避免出错后继续执行
         exit ;
+    }
+
+    protected function showTrace(){
+        $var  =  $this->view->getAllVar();
+        foreach ($var as $name=>$val){
+            dump($val,1,'['.$name.']<br/>');
+        }
     }
 
 }//类定义结束

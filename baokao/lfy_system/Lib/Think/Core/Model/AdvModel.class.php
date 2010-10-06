@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK IT ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2009 http://thinkphp.cn All rights reserved.
+// | Copyright (c) 2010 http://thinkphp.cn All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
 // +----------------------------------------------------------------------
@@ -550,7 +550,7 @@ class AdvModel extends Model {
             return false;
         }
         if($lazyTime>0) {// 延迟写入
-            $guid =  md5($this->name.'_'.$field.'_'.serialize($conditon));
+            $guid =  md5($this->name.'_'.$field.'_'.serialize($condition));
             $step = $this->lazyWrite($guid,$step,$lazyTime);
             if(false === $step ) return true; // 等待下次写入
         }
@@ -578,7 +578,7 @@ class AdvModel extends Model {
             return false;
         }
         if($lazyTime>0) {// 延迟写入
-            $guid =  md5($this->name.'_'.$field.'_'.serialize($conditon));
+            $guid =  md5($this->name.'_'.$field.'_'.serialize($condition));
             $step = $this->lazyWrite($guid,$step,$lazyTime);
             if(false === $step ) return true; // 等待下次写入
         }

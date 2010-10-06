@@ -1,7 +1,6 @@
 <?php
 return array(
     //'APP_DEBUG'             =>true,  //调试模式
-    'URL_MODEL'             => 1,   //url访问模式
     'URL_HTML_SUFFIX'       => '.shtml',  // URL伪静态后缀设置
     'URL_PATHINFO_DEPR'     => '-',	// PATHINFO模式下，各参数之间的分割符号
     'URL_CASE_INSENSITIVE'  => true,   // URL地址是否不区分大小写

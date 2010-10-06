@@ -59,7 +59,7 @@ class ConfigAction extends Action{
       */
      public function set_bknum(){
          $Bk_num=M('Bk_num');
-         $this->assign('bk_list', $Bk_num->order('stu_join')->select());
+         $this->assign('bk_list', $Bk_num->order('stu_join desc')->select());
          $this->display();
      }
 
@@ -104,6 +104,34 @@ class ConfigAction extends Action{
          }else{
              $this->ajaxReturn(2);  //无修改
          }
+     }
+
+     /**
+      * 保存增加的新报考次数项
+      */
+     function save_add_bknum(){
+         $bk_num=addslashes($_POST['bk_num']);
+         $stu_join=addslashes($_POST['stu_join']);
+         //检测传递的$bk_num是否符合系统要求，必须为数值
+         if(!is_numeric($bk_num)){
+             $this->ajaxReturn(0);
+             exit ();
+         }
+
+         $Bk=M('Bk_num');
+         if($Bk->where("stu_join='{$stu_join}'")->count()>0){
+             $this->ajaxReturn(1);
+             exit();
+         }
+
+         $data['bk_num']=$bk_num;
+         $data['stu_join']=$stu_join;
+         if($Bk->add($data)){
+             $this->ajaxReturn(2);
+             
+         }
+
+
      }
     
 }

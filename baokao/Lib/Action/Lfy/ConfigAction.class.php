@@ -135,6 +135,64 @@ class ConfigAction extends Action{
              
          }
      }
+
+     /**
+      * 设置报考批次设置页面
+      */
+     function set_pici(){
+        $Pici=M('Pici');
+        $this->assign('pc_list', $Pici->order('pc_id desc')->select());
+
+         $this->display();
+     }
+
+     /**
+      * 将传递的pc_id指定的批次状态置为开启
+      */
+     function set_pckaiqi(){
+         $pc_id=addslashes($_POST['pc_id']);
+         //检测pc_id是否为数值型
+         if(!is_numeric($pc_id)){
+             $this->ajaxReturn(0);
+             exit();
+         }
+         $Pc=M('Pici');
+         $pc_join=$Pc->where("pc_id={$pc_id}")->getField('pc_join');
+         if($Pc->where("pc_join='{$pc_join}' and pc_off='t'")->count()>0){
+             $this->ajaxReturn(8);   //已经存在开启的
+             exit();
+         }
+
+
+         if($Pc->where("pc_id={$pc_id}")->setField('pc_off','t')){
+             S("pc{$pc_join}",null);  //清除该批次的缓存信息
+             $this->ajaxReturn(2);   //设置状态成功
+         }else{
+             $this->ajaxReturn(1);   //设置状态失败
+         }
+
+     }
+
+
+
+     /**
+      * 将传递的pc_id指定的批次状态置为禁用
+      */
+     function set_pcjinyong(){
+         $pc_id=addslashes($_POST['pc_id']);
+         //检测pc_id是否为数值型
+         if(!is_numeric($pc_id)){
+             $this->ajaxReturn(0);
+             exit();
+         }
+         $Pc=M('Pici');
+         if($Pc->where("pc_id={$pc_id}")->setField('pc_off','f')){
+             $this->ajaxReturn(2);   //设置状态成功
+         }else{
+             $this->ajaxReturn(1);   //设置状态失败
+         }
+
+     }
     
 }
 ?>

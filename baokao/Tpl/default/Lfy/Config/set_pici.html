@@ -1,0 +1,86 @@
+<include file="Public:header" />
+<script type="text/javascript">
+    $(function(){
+        $('.kaiqi').click(function(){
+            var pc_id=this.id;
+            $.post("{:U('config/set_pckaiqi')}",{
+                    "pc_id":pc_id
+                },function(data){chuli(data.data,pc_id);},'json');
+        });
+
+
+        $('.jinyong').click(function(){
+            var pc_id=this.id;
+            $.post("{:U('config/set_pcjinyong')}",{
+                    "pc_id":pc_id
+                },function(data){chuli(data.data,pc_id);},'json');
+        });
+
+
+        function chuli(data,pc_id){
+            switch(data){
+                case 0:
+                    $('#pop').html('传递批次编号错误，请刷新网页后再次尝试！');
+                    break;
+                case 8:
+                    $('#pop').html('每年级只能有一个批次处于开启状态！');
+                    break;
+                case 1:
+                    $('#pop').html('批次状态设置失败，请刷新网页后再次尝试！');
+                    break;
+                case 2:
+                    $('#pop').html('批次状态设置成功！');
+                    alert('批次状态设置成功，网页将自动刷新！');
+                    location.href="{:U('config/set_pici')}"
+                    break;
+            }
+        }
+
+
+        $('#pop').ajaxStart(function(){
+            $('#pop').html('<img src="__ROOT__/images/loading.gif" border="0"><font color="red">数据请求中...请稍后...</font>');
+        });
+    });
+</script>
+<div style="margin-top: 30px;margin-left: 20px;">
+    <b>报考批次设置：</b><br /><br />
+    【<a href="{:U('config/add_pici')}">增加</a>】<br />
+    <span id="pop" style="color:red;"></span><br />
+    <table width="900px" border="1" cellpadding="0" cellspacing="0" align="left" style="border-collapse:collapse" bordercolor="#000000">
+        <tr>
+            <td width="8%" align="center">批次编号</td>
+            <td width="15%" align="center">批次名称</td>
+            <td width="8%" align="center">针对年级</td>
+            <td width="8%" align="center">限制人数</td>
+            <td width="15%" align="center">时间</td>
+            <td width="15%" align="center">地点</td>
+            <td width="15%" align="center">备注</td>
+            <td width="16%" align="center">操作</td>
+        </tr>
+        <foreach name="pc_list" item="pc">
+            <tr>
+                <td width="8%" align="center">{$pc.pc_id}</td>
+                <td width="15%">{$pc.pc_name}</td>
+                <td width="8%" align="center">{$pc.pc_join}</td>
+                <td width="8%" align="center">{$pc.pc_num}</td>
+                <td width="15%">{$pc.pc_time}</td>
+                <td width="15%">{$pc.pc_address}</td>
+                <td width="15%">{$pc.pc_beizhu}</td>
+                <td width="16%" align="center">
+                    [<?php
+                    if($pc['pc_off']=='t'){
+                        echo '<span id="i_'.$pc['pc_id'].'"><a href="#" class="jinyong" id="'.$pc['pc_id'].'"><font color="red">禁用</font></a></span>';
+                    }else{
+                        echo '<span id="i_'.$pc['pc_id'].'"><a href="#" class="kaiqi" id="'.$pc['pc_id'].'"><font color="green">开启</font></a></span>';
+                    }
+                    ?>]
+                    [<a href="#">修改</a>][<a href="#">删除</a>]</td>
+            </tr>
+        </foreach>
+    </table>
+    <br /><br />
+    
+</div>
+<br />
+<font color="red" style="float:left;">说明：显示红色禁用时为开启状态，显示绿色开启为禁用状态。每个年级只能存在唯一一个处于开启状态的批次，已经有学生报考的批次不能进行删除操作！</font>
+<include file="Public:ender" />

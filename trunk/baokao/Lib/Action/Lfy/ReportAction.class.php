@@ -5,6 +5,11 @@
  * @author lanfengye2008
  */
 class ReportAction extends Action{
+    function _initialize()  //初始化
+    {
+         $Login=D('Admin.Login');
+         $Login->check_admin();
+    }
     /**
      * 各报考批次报表
      */

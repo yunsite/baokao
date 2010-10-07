@@ -675,7 +675,7 @@ function F($name,$value='',$path=DATA_PATH) {
             $dir   =  dirname($filename);
             // 目录不存在则创建
             if(!is_dir($dir))  mkdir($dir);
-            return file_put_contents($filename,strip_whitespace("<?php\nreturn ".var_export($value,true).";\n?>"));
+            return file_put_contents($filename,"<?php\nreturn ".var_export($value,true).";\n?>");
         }
     }
     if(isset($_cache[$name])) return $_cache[$name];
@@ -704,17 +704,6 @@ function to_guid_string($mix)
 
 //[RUNTIME]
 // 编译文件
-function compile($filename,$runtime=false) {
-    $content = file_get_contents($filename);
-    if(true === $runtime)
-        // 替换预编译指令
-        $content = preg_replace('/\/\/\[RUNTIME\](.*?)\/\/\[\/RUNTIME\]/s','',$content);
-    $content = substr(trim($content),5);
-    if('?>' == substr($content,-2))
-        $content = substr($content,0,-2);
-    return $content;
-}
-
 // 去除代码中的空白和注释
 function strip_whitespace($content) {
     $stripStr = '';
@@ -752,6 +741,18 @@ function strip_whitespace($content) {
     }
     return $stripStr;
 }
+
+function compile($filename,$runtime=false) {
+    $content = file_get_contents($filename);
+    if(true === $runtime)
+        // 替换预编译指令
+        $content = preg_replace('/\/\/\[RUNTIME\](.*?)\/\/\[\/RUNTIME\]/s','',$content);
+    $content = substr(trim($content),5);
+    if('?>' == substr($content,-2))
+        $content = substr($content,0,-2);
+    return $content;
+}
+
 // 根据数组生成常量定义
 function array_define($array) {
     $content = '';
@@ -864,7 +865,7 @@ function cookie($name,$value='',$option=null)
             $option = array('expire'=>$option);
         elseif( is_string($option) )
             parse_str($option,$option);
-        array_merge($config,array_change_key_case($option));
+        $config = array_merge($config,array_change_key_case($option));
     }
     // 清除指定前缀的所有cookie
     if (is_null($name)) {
@@ -893,7 +894,7 @@ function cookie($name,$value='',$option=null)
             // 设置cookie
             $expire = !empty($config['expire'])? time()+ intval($config['expire']):0;
             setcookie($name,$value,$expire,$config['path'],$config['domain']);
-            //$_COOKIE[$name] = $value;
+            $_COOKIE[$name] = $value;
         }
     }
 }

@@ -1,0 +1,67 @@
+<include file="Public:header" />
+<script type="text/javascript">
+    $(function(){
+        $('#huoqu').click(function(){
+            tiaozhuan();
+        });
+
+        $('#select_pc').change(function(){
+            tiaozhuan();
+        });
+
+        function tiaozhuan(){
+            var pc_id=$('#select_pc').val();
+            location.href="__APP__?g=Lfy&m=report&a=hege_report&id="+pc_id;
+        }
+
+
+        $('#pop').ajaxStart(function(){
+            $('#pop').html('<img src="__ROOT__/images/loading.gif" border="0"><font color="red">数据请求中...请稍后...</font>');
+        });
+    });
+</script>
+<div style="margin-top: 30px;margin-left: 20px;">
+    <b>各批次合格报表：</b><br /><br />
+    <span id="pop" style="color:red;"></span>
+    <select id="select_pc">
+        <option value="0" <?php if($pc_id==0){echo 'selected="selected"';}?>>请选择批次</option>
+        <option value="0.1" <?php if($pc_id==0.1){echo 'selected="selected"';}?>>全部</option>
+        <foreach name="pc_list" item="pc">
+            <option value="{$pc.pc_id}" <?php if($pc_id==$pc['pc_id']) echo 'selected="selected"';?>>{$pc.pc_name}</option>
+        </foreach>
+    </select>&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" id="huoqu" value="手动获取" />
+    <br />
+    <br />
+    <table width="900px" border="1" cellpadding="0" cellspacing="0" align="left" style="border-collapse:collapse" bordercolor="#000000">
+        <tr>
+            <td width="10%" align="center">学号</td>
+            <td width="10%" align="center">姓名</td>
+            <td width="5%" align="center">性别</td>
+            <td width="10%" align="center">系别</td>
+            <td width="20%" align="center">专业班级</td>
+            <td width="20%" align="center">报考的批次</td>
+            <td width="15%" align="center">考试时间</td>
+            <td width="10%" align="center">分数</td>
+        </tr>
+        <foreach name="stu_list" item="stu">
+            <tr>
+                <td width="10%" align="center">{$stu.stu_no}</td>
+                <td width="10%" align="center">{$stu.stu_name}</td>
+                <td width="5%" align="center">{$stu.stu_sex}</td>
+                <td width="10%" align="center">{$stu.depart_name}</td>
+                <td width="17%" align="center">{$stu.stu_class}</td>
+                <td width="20%" align="center">{$stu.pc_name}</td>
+                <td width="15%" align="center">{$stu.pc_time}</td>
+                <td width="10%" align="center">{$stu.hg_num}</td>
+            </tr>
+        </foreach>
+        <tr>
+            <td width="100%" align="right" colspan="8" style="color:red;">共计【{$stu_num}】人
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        </tr>
+    </table>
+    <br /><br />
+    
+</div>
+<include file="Public:ender" />

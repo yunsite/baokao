@@ -1,0 +1,70 @@
+<include file="Public:header" />
+<script type="text/javascript">
+    $(function(){
+        $('#huoqu').click(function(){
+            tiaozhuan();
+        });
+
+        function tiaozhuan(){
+            var year=$('#select_year').val();
+            var depart=$('#select_depart').val();
+            location.href="__APP__?g=Lfy&m=report&a=nohege_report&depart="+depart+"&year="+year;
+        }
+
+
+        $('#pop').ajaxStart(function(){
+            $('#pop').html('<img src="__ROOT__/images/loading.gif" border="0"><font color="red">数据请求中...请稍后...</font>');
+        });
+    });
+</script>
+<div style="margin-top: 30px;margin-left: 20px;">
+    <b>未合格报表：</b><br /><br />
+    <span id="pop" style="color:red;"></span>
+    <select id="select_year">
+        <option value="select" <?php if($year=='select'){echo 'selected="selected"';}?>>请选择年级</option>
+        <option value="all" <?php if($year=='all'){echo 'selected="selected"';}?>>全部</option>
+        <foreach name="year_list" item="ye">
+            <option value="{$ye.stu_join}" <?php if($year==$ye['stu_join']) echo 'selected="selected"';?>>{$ye.stu_join}</option>
+        </foreach>
+    </select>&nbsp;&nbsp;
+    <select id="select_depart">
+        <option value="select" <?php if($depart=='select'){echo 'selected="selected"';}?>>请选择系别</option>
+        <option value="all" <?php if($depart=='all'){echo 'selected="selected"';}?>>全部</option>
+        <foreach name="depart_list" item="de">
+            <option value="{$de.depart_name}" <?php if($depart==$de['depart_name']) echo 'selected="selected"';?>>{$de.depart_name}</option>
+        </foreach>
+    </select>
+    &nbsp;&nbsp;&nbsp;&nbsp;<input type="button" id="huoqu" value="手动获取" />
+    <br />
+    <br />
+    <table width="800px" border="1" cellpadding="0" cellspacing="0" align="left" style="border-collapse:collapse" bordercolor="#000000">
+        <tr>
+            <td width="15%" align="center">学号</td>
+            <td width="15%" align="center">姓名</td>
+            <td width="10%" align="center">性别</td>
+            <td width="15%" align="center">系别</td>
+            <td width="25%" align="center">专业班级</td>
+            <td width="10%" align="center">入学时间</td>
+            <td width="10%" align="center">剩余次数</td>
+        </tr>
+        <foreach name="stu_list" item="stu">
+            <tr>
+                <td width="15%" align="center">{$stu.stu_no}</td>
+                <td width="15%" align="center">{$stu.stu_name}</td>
+                <td width="10%" align="center">{$stu.stu_sex}</td>
+                <td width="15%" align="center">{$stu.depart_name}</td>
+                <td width="25%" align="center">{$stu.stu_class}</td>
+                <td width="10%" align="center">{$stu.stu_join}</td>
+                <td width="10%" align="center">{$stu.num}</td>
+            </tr>
+        </foreach>
+        <tr>
+            <td width="100%" align="right" colspan="8" style="color:red;">共计【{$stu_num}】人
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        </tr>
+    </table>
+    <br /><br />
+    
+</div>
+<include file="Public:ender" />

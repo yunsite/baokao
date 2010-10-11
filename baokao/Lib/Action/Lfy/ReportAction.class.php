@@ -130,10 +130,11 @@ class ReportAction extends Action{
             ."and NOT EXISTS (SELECT * FROM lfy_stu_hege WHERE lfy_stu_hege.stu_no = lfy_stu_info.stu_no) "
             ."order by stu_join desc,depart_name,stu_class,stu_no desc";
             //$list=$Stu_info->query($sql);
-            
-            $this->assign('stu_list', $Stu_info->query($sql));
+            $list=$Stu_info->query($sql);
+            $this->assign('stu_list', $list);
             //将当前的数量赋值到模板
             $this->assign('stu_num', count($list));
+            unset ($list);
         }else{
             $this->assign('stu_num', 0);
         }

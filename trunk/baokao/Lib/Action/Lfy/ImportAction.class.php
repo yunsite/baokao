@@ -197,10 +197,10 @@ class ImportAction extends Action{
 
 	
 	   if(!$upload->upload()) { // 上传错误提示错误信息！
-               $this->display('Import:upload_error');
+               $this->display('Lfy:Import:upload_error');
                dump($upload->getErrorMsg());
 		}else{ // 上传成功获取上传文件信息
-                    $this->display('Import:upload_sussful');
+                    $this->display('Lfy:Import:upload_sussful');
 		}
 
         }

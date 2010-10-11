@@ -190,19 +190,17 @@ class ImportAction extends Action{
         //设置上传文件大小  单位Byte  当前小于200Kb
         $upload->maxSize  = 204800 ;
         //设置上传文件类型
-        $upload->allowExts  = array('xls','jpg'); // 设置附件上传类型
+        $upload->allowExts  = explode(',', 'jpg,xls');; // 设置附件上传类型
         $upload->uploadReplace=true;  //同名文件覆盖
         //设置附件上传目录
         $upload->savePath =  "{$url}";
 
-	   //设置上传文件规则
-	   //$upload->saveRule = uniqid;
-	   //删除原图
-            //$upload->thumbRemoveOrigin = true;
+	
 	   if(!$upload->upload()) { // 上传错误提示错误信息！
-               $this->display('Lfy:Import:upload_error');
+               $this->display('Import:upload_error');
+               dump($upload->getErrorMsg());
 		}else{ // 上传成功获取上传文件信息
-                    $this->display('Lfy:Import:upload_sussful');
+                    $this->display('Import:upload_sussful');
 		}
 
         }

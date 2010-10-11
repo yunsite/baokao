@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK IT ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2010 http://thinkphp.cn All rights reserved.
+// | Copyright (c) 2009 http://thinkphp.cn All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
 // +----------------------------------------------------------------------
@@ -123,7 +123,7 @@ class Db extends Think
      * 执行查询 主要针对 SELECT, SHOW 等指令
      * 返回数据集
      +----------------------------------------------------------
-     * @access public
+     * @access protected
      +----------------------------------------------------------
      * @param string $str  sql指令
      +----------------------------------------------------------
@@ -132,7 +132,7 @@ class Db extends Think
      * @throws ThinkExecption
      +----------------------------------------------------------
      */
-    public function query($str='') {
+    protected function query($str='') {
         $this->connect();
         if ( !$this->linkID ) return false;
         if ( $str != '' ) $this->queryStr = $str;
@@ -156,7 +156,7 @@ class Db extends Think
      +----------------------------------------------------------
      * 执行语句 针对 INSERT, UPDATE 以及DELETE
      +----------------------------------------------------------
-     * @access public
+     * @access protected
      +----------------------------------------------------------
      * @param string $str  sql指令
      +----------------------------------------------------------
@@ -165,7 +165,7 @@ class Db extends Think
      * @throws ThinkExecption
      +----------------------------------------------------------
      */
-    public function execute($str='') {
+    protected function execute($str='') {
         $this->connect();
         if ( !$this->linkID ) return false;
         if ( $str != '' ) $this->queryStr = $str;

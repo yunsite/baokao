@@ -159,9 +159,8 @@ class UploadFile extends Think
                 $thumbPath    =  $this->thumbPath?$this->thumbPath:$file['savepath'];
                 // 生成图像缩略图
                 import("ORG.Util.Image");
-                $realFilename  =  $this->autoSub?basename($file['savename']):$file['savename'];
                 for($i=0,$len=count($thumbWidth); $i<$len; $i++) {
-                    $thumbname	=	$thumbPath.$thumbPrefix[$i].substr($realFilename,0,strrpos($realFilename, '.')).$thumbSuffix[$i].'.'.$file['extension'];
+                    $thumbname	=	$thumbPath.$thumbPrefix[$i].substr($file['savename'],0,strrpos($file['savename'], '.')).$thumbSuffix[$i].'.'.$file['extension'];
                     Image::thumb($filename,$thumbname,'',$thumbWidth[$i],$thumbHeight[$i],true);
                 }
                 if($this->thumbRemoveOrigin) {
@@ -179,7 +178,7 @@ class UploadFile extends Think
 
     /**
      +----------------------------------------------------------
-     * 上传所有文件
+     * 上传文件
      +----------------------------------------------------------
      * @access public
      +----------------------------------------------------------
@@ -257,78 +256,6 @@ class UploadFile extends Think
 
     /**
      +----------------------------------------------------------
-     * 上传单个上传字段中的文件 支持多附件
-     +----------------------------------------------------------
-     * @access public
-     +----------------------------------------------------------
-     * @param array $file  上传文件信息
-     * @param string $savePath  上传文件保存路径
-     +----------------------------------------------------------
-     * @return string
-     +----------------------------------------------------------
-     * @throws ThinkExecption
-     +----------------------------------------------------------
-     */
-    public function uploadOne($file,$savePath=''){
-        //如果不指定保存文件名，则由系统默认
-        if(empty($savePath))
-            $savePath = $this->savePath;
-        // 检查上传目录
-        if(!is_dir($savePath)) {
-            // 尝试创建目录
-            if(!mk_dir($savePath)){
-                $this->error  =  '上传目录'.$savePath.'不存在';
-                return false;
-            }
-        }else {
-            if(!is_writeable($savePath)) {
-                $this->error  =  '上传目录'.$savePath.'不可写';
-                return false;
-            }
-        }
-        //过滤无效的上传
-        if(!empty($file['name'])) {
-            $fileArray = array();
-            if(is_array($file['name'])) {
-               $keys = array_keys($file);
-               $count	 =	 count($file['name']);
-               for ($i=0; $i<$count; $i++) {
-                   foreach ($keys as $key)
-                       $fileArray[$i][$key] = $file[$key][$i];
-               }
-            }else{
-                $fileArray[] =  $file;
-            }
-            $info =  array();
-            foreach ($fileArray as $key=>$file){
-                //登记上传文件的扩展信息
-                $file['extension']  = $this->getExt($file['name']);
-                $file['savepath']   = $savePath;
-                $file['savename']   = $this->getSaveName($file);
-                // 自动检查附件
-                if($this->autoCheck) {
-                    if(!$this->check($file))
-                        return false;
-                }
-                //保存上传文件
-                if(!$this->save($file)) return false;
-                if(function_exists($this->hashType)) {
-                    $fun =  $this->hashType;
-                    $file['hash']   =  $fun(auto_charset($file['savepath'].$file['savename'],'utf-8','gbk'));
-                }
-                unset($file['tmp_name'],$file['error']);
-                $info[] = $file;
-            }
-            // 返回上传的文件信息
-            return $info;
-        }else {
-            $this->error  =  '没有选择上传文件';
-            return false;
-        }
-    }
-
-    /**
-     +----------------------------------------------------------
      * 转换上传文件数组变量为正确的方式
      +----------------------------------------------------------
      * @access private
@@ -340,20 +267,18 @@ class UploadFile extends Think
      */
     private function dealFiles($files) {
        $fileArray = array();
-       $n = 0;
        foreach ($files as $file){
            if(is_array($file['name'])) {
                $keys = array_keys($file);
                $count	 =	 count($file['name']);
                for ($i=0; $i<$count; $i++) {
                    foreach ($keys as $key)
-                       $fileArray[$n][$key] = $file[$key][$i];
-                   $n++;
+                       $fileArray[$i][$key] = $file[$key][$i];
                }
            }else{
-               $fileArray[$n] = $files;
-               $n++;
+               $fileArray	=	$files;
            }
+           break;
        }
        return $fileArray;
     }
@@ -425,8 +350,7 @@ class UploadFile extends Think
         }
         if($this->autoSub) {
             // 使用子目录保存文件
-            $filename['savename'] = $saveName;
-            $saveName = $this->getSubName($filename).'/'.$saveName;
+            $saveName   =  $this->getSubName($filename).'/'.$saveName;
         }
         return $saveName;
     }
@@ -453,7 +377,7 @@ class UploadFile extends Think
                 $name = md5($file['savename']);
                 $dir   =  '';
                 for($i=0;$i<$this->hashLevel;$i++) {
-                    $dir   .=  $name{$i}.'/';
+                    $dir   .=  $name{0}.'/';
                 }
                 break;
         }

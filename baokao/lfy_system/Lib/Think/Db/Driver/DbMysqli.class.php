@@ -103,10 +103,7 @@ class DbMysqli extends Db{
         $this->queryStr = $str;
         //释放前次的查询结果
         if ( $this->queryID ) $this->free();
-        N('db_query',1);
-        // 记录开始执行时间
-        G('queryStartTime');
-
+        $this->Q(1);
         $this->queryID = $this->_linkID->query($str);
         $this->debug();
         if ( false === $this->queryID ) {
@@ -138,9 +135,7 @@ class DbMysqli extends Db{
         $this->queryStr = $str;
         //释放前次的查询结果
         if ( $this->queryID ) $this->free();
-        N('db_write',1);
-        // 记录开始执行时间
-        G('queryStartTime');
+        $this->W(1);
         $result =   $this->_linkID->query($str);
         $this->debug();
         if ( false === $result ) {

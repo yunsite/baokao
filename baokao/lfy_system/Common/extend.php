@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK IT ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2010 http://thinkphp.cn All rights reserved.
+// | Copyright (c) 2009 http://thinkphp.cn All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
 // +----------------------------------------------------------------------
@@ -516,7 +516,7 @@ function list_search($list,$condition) {
 }
 
 // 发送Http状态信息
-function send_http_status($code) {
+function send_http_status($status) {
     static $_status = array(
         // Informational 1xx
         100 => 'Continue',

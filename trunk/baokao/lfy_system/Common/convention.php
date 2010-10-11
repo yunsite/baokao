@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK IT ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2010 http://thinkphp.cn All rights reserved.
+// | Copyright (c) 2009 http://thinkphp.cn All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
 // +----------------------------------------------------------------------
@@ -93,7 +93,6 @@ return  array(
     'LANG_AUTO_DETECT'      => true,   // 自动侦测语言 开启多语言功能后有效
 
     /* 日志设置 */
-    'LOG_EXCEPTION_RECORD'  => true,    // 是否记录异常信息日志(默认为开启状态)
     'LOG_RECORD'            => false,   // 默认不记录日志
     'LOG_FILE_SIZE'         => 2097152,	// 日志文件大小限制
     'LOG_RECORD_LEVEL'      => array('EMERG','ALERT','CRIT','ERR'),// 允许记录的日志级别
@@ -122,7 +121,6 @@ return  array(
     'TMPL_ENGINE_TYPE'		=> 'Think',     // 默认模板引擎 以下设置仅对使用Think模板引擎有效
     'TMPL_DETECT_THEME'     => false,       // 自动侦测模板主题
     'TMPL_TEMPLATE_SUFFIX'  => '.html',     // 默认模板文件后缀
-    'TMPL_CONTENT_TYPE'     => 'text/html', // 默认模板输出类型
     'TMPL_CACHFILE_SUFFIX'  => '.php',      // 默认模板缓存后缀
     'TMPL_DENY_FUNC_LIST'	=> 'echo,exit',	// 模板引擎禁用函数
     'TMPL_PARSE_STRING'     => '',          // 模板引擎要自动替换的字符串，必须是数组形式。
@@ -147,15 +145,14 @@ return  array(
     'TAG_EXTEND_PARSE'      => '',   // 指定对普通标签进行扩展定义和解析的函数名称。
 
     /* 表单令牌验证 */
-    'TOKEN_ON'              => true,     // 开启令牌验证
-    'TOKEN_NAME'            => '__hash__',    // 令牌验证的表单隐藏字段名称
-    'TOKEN_TYPE'            => 'md5',   // 令牌验证哈希规则
+    'TOKEN_ON'                    =>   true,     // 开启令牌验证
+    'TOKEN_NAME'                =>   '__lfy__',    // 令牌验证的表单隐藏字段名称
+    'TOKEN_TYPE'                 =>    'md5',   // 令牌验证哈希规则
 
     /* URL设置 */
 	'URL_CASE_INSENSITIVE'  => false,   // URL地址是否不区分大小写
     'URL_ROUTER_ON'         => false,   // 是否开启URL路由
-    'URL_ROUTE_RULES'       => array(), // 默认路由规则，注：分组配置无法替代
-    //'URL_DISPATCH_ON'       => true,	// 是否启用Dispatcher，不再生效
+    'URL_DISPATCH_ON'       => true,	// 是否启用Dispatcher
     'URL_MODEL'      => 1,       // URL访问模式,可选参数0、1、2、3,代表以下四种模式：
     // 0 (普通模式); 1 (PATHINFO 模式); 2 (REWRITE  模式); 3 (兼容模式) 当URL_DISPATCH_ON开启后有效; 默认为PATHINFO 模式，提供最好的用户体验和SEO支持
     'URL_PATHINFO_MODEL'    => 2,       // PATHINFO 模式,使用数字1、2、3代表以下三种模式:
@@ -164,7 +161,6 @@ return  array(
     // 3 兼容模式(通过一个GET变量将PATHINFO传递给dispather，默认为s index.php?s=/module/action/id/1)
     'URL_PATHINFO_DEPR'     => '/',	// PATHINFO模式下，各参数之间的分割符号
     'URL_HTML_SUFFIX'       => '',  // URL伪静态后缀设置
-    //'URL_AUTO_REDIRECT'     => true, // 自动重定向到规范的URL 不再生效
 
     /* 系统变量名称设置 */
     'VAR_GROUP'             => 'g',     // 默认分组获取变量

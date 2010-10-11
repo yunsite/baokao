@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK IT ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2010 http://thinkphp.cn All rights reserved.
+// | Copyright (c) 2009 http://thinkphp.cn All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
 // +----------------------------------------------------------------------
@@ -20,19 +20,6 @@
  * @version  $Id$
  +------------------------------------------------------------------------------
  */
-
-// 设置和获取统计数据
-function N($key,$step=0){
-    static $_num = array();
-    if(!isset($_num[$key])) {
-        $_num[$key]  =  0;
-    }
-    if(empty($step))
-        return $_num[$key];
-    else
-        $_num[$key]  =  $_num[$key]+(int)$step;
-}
-
 
 // URL组装 支持不同模式和路由
 function U($url,$params=array(),$redirect=false,$suffix=true) {
@@ -233,7 +220,7 @@ function dump($var, $echo=true,$label=null, $strict=true)
             $output = print_r($var, true);
             $output = "<pre>".$label.htmlspecialchars($output,ENT_QUOTES)."</pre>";
         } else {
-            $output = $label . print_r($var, true);
+            $output = $label . " : " . print_r($var, true);
         }
     }else {
         ob_start();
@@ -467,8 +454,8 @@ function D($name='',$app='')
     if(isset($_model[$app.$name]))
         return $_model[$app.$name];
     $OriClassName = $name;
-    if(strpos($name,'.')) {
-        $array   =  explode('.',$name);
+    if(strpos($name,C('APP_GROUP_DEPR'))) {
+        $array   =  explode(C('APP_GROUP_DEPR'),$name);
         $name = array_pop($array);
         $className =  $name.'Model';
         import($app.'.Model.'.implode('.',$array).'.'.$className);
@@ -478,11 +465,11 @@ function D($name='',$app='')
     }
     if(class_exists($className)) {
         $model = new $className();
+        $_model[$app.$OriClassName] =  $model;
+        return $model;
     }else {
-        $model  = new Model($name);
+        throw_exception($className.L('_MODEL_NOT_EXIST_'));
     }
-    $_model[$app.$OriClassName] =  $model;
-    return $model;
 }
 
 /**
@@ -517,8 +504,8 @@ function A($name,$app='@')
     if(isset($_action[$app.$name]))
         return $_action[$app.$name];
     $OriClassName = $name;
-    if(strpos($name,'.')) {
-        $array   =  explode('.',$name);
+    if(strpos($name,C('APP_GROUP_DEPR'))) {
+        $array   =  explode(C('APP_GROUP_DEPR'),$name);
         $name = array_pop($array);
         $className =  $name.'Action';
         import($app.'.Action.'.implode('.',$array).'.'.$className);
@@ -574,8 +561,8 @@ function C($name=null,$value=null)
     // 优先执行设置获取或赋值
     if (is_string($name))
     {
+        $name = strtolower($name);
         if (!strpos($name,'.')) {
-            $name = strtolower($name);
             if (is_null($value))
                 return isset($_config[$name])? $_config[$name] : null;
             $_config[$name] = $value;
@@ -583,7 +570,6 @@ function C($name=null,$value=null)
         }
         // 二维数组设置和获取支持
         $name = explode('.',$name);
-        $name[0]   = strtolower($name[0]);
         if (is_null($value))
             return isset($_config[$name[0]][$name[1]]) ? $_config[$name[0]][$name[1]] : null;
         $_config[$name[0]][$name[1]] = $value;
@@ -597,28 +583,23 @@ function C($name=null,$value=null)
 
 // 处理标签
 function tag($name,$params=array()) {
-    $tags   =  C('TAGS_FILTER_LIST.'.$name);
-    if(!empty($tags)) {
+    $tags   =  C('_tags_.'.$name);
+    if($tags) {
         foreach ($tags   as $key=>$call){
-            $result   =  B($call,$params);
+            if(is_callable($call))
+                $result = call_user_func_array($call,$params);
         }
+        return $result;
     }
-}
-
-// 过滤器方法
-function filter($name,&$content) {
-    $class = $name.'Filter';
-    require_cache(LIB_PATH.'Filter/'.$class.'.class.php');
-    $filter   =  new $class();
-    $content = $filter->run($content);
+    return false;
 }
 
 // 执行行为
-function B($name,$params=array()) {
+function B($name) {
     $class = $name.'Behavior';
     require_cache(LIB_PATH.'Behavior/'.$class.'.class.php');
     $behavior   =  new $class();
-    return $behavior->run($params);
+    $behavior->run();
 }
 
 // 渲染输出Widget
@@ -704,6 +685,17 @@ function to_guid_string($mix)
 
 //[RUNTIME]
 // 编译文件
+function compile($filename,$runtime=false) {
+    $content = file_get_contents($filename);
+    if(true === $runtime)
+        // 替换预编译指令
+        $content = preg_replace('/\/\/\[RUNTIME\](.*?)\/\/\[\/RUNTIME\]/s','',$content);
+    $content = substr(trim($content),5);
+    if('?>' == substr($content,-2))
+        $content = substr($content,0,-2);
+    return $content;
+}
+
 // 去除代码中的空白和注释
 function strip_whitespace($content) {
     $stripStr = '';
@@ -741,18 +733,6 @@ function strip_whitespace($content) {
     }
     return $stripStr;
 }
-
-function compile($filename,$runtime=false) {
-    $content = file_get_contents($filename);
-    if(true === $runtime)
-        // 替换预编译指令
-        $content = preg_replace('/\/\/\[RUNTIME\](.*?)\/\/\[\/RUNTIME\]/s','',$content);
-    $content = substr(trim($content),5);
-    if('?>' == substr($content,-2))
-        $content = substr($content,0,-2);
-    return $content;
-}
-
 // 根据数组生成常量定义
 function array_define($array) {
     $content = '';
@@ -774,7 +754,7 @@ function array_define($array) {
 //[/RUNTIME]
 
 // 循环创建目录
-function mk_dir($dir, $mode = 0777)
+function mk_dir($dir, $mode = 0755)
 {
   if (is_dir($dir) || @mkdir($dir,$mode)) return true;
   if (!mk_dir(dirname($dir),$mode)) return false;
@@ -838,7 +818,7 @@ function data_to_xml($data) {
 
 /**
  +----------------------------------------------------------
- * Cookie 设置、获取、清除
+ * Cookie 设置、获取、清除 (支持数组或对象直接设置) 2009-07-9
  +----------------------------------------------------------
  * 1 获取cookie: cookie('name')
  * 2 清空当前设置前缀的所有cookie: cookie(null)
@@ -847,8 +827,8 @@ function data_to_xml($data) {
  * 5 删除cookie: cookie('name',null)
  +----------------------------------------------------------
  * $option 可用设置prefix,expire,path,domain
- * 支持数组形式对参数设置:cookie('name','value',array('expire'=>1,'prefix'=>'think_'))
- * 支持query形式字符串对参数设置:cookie('name','value','prefix=tp_&expire=10000')
+ * 支持数组形式:cookie('name','value',array('expire'=>1,'prefix'=>'think_'))
+ * 支持query形式字符串:cookie('name','value','prefix=tp_&expire=10000')
  */
 function cookie($name,$value='',$option=null)
 {
@@ -865,7 +845,7 @@ function cookie($name,$value='',$option=null)
             $option = array('expire'=>$option);
         elseif( is_string($option) )
             parse_str($option,$option);
-        $config = array_merge($config,array_change_key_case($option));
+        array_merge($config,array_change_key_case($option));
     }
     // 清除指定前缀的所有cookie
     if (is_null($name)) {
@@ -876,7 +856,7 @@ function cookie($name,$value='',$option=null)
        {
            foreach($_COOKIE as $key=>$val) {
                if (0 === stripos($key,$prefix)){
-                    setcookie($key,'',time()-3600,$config['path'],$config['domain']);
+                    setcookie($_COOKIE[$key],'',time()-3600,$config['path'],$config['domain']);
                     unset($_COOKIE[$key]);
                }
            }
@@ -885,7 +865,7 @@ function cookie($name,$value='',$option=null)
     }
     $name = $config['prefix'].$name;
     if (''===$value){
-        return isset($_COOKIE[$name]) ? $_COOKIE[$name] : null;// 获取指定Cookie
+        return isset($_COOKIE[$name]) ? unserialize($_COOKIE[$name]) : null;// 获取指定Cookie
     }else {
         if (is_null($value)) {
             setcookie($name,'',time()-3600,$config['path'],$config['domain']);
@@ -893,8 +873,8 @@ function cookie($name,$value='',$option=null)
         }else {
             // 设置cookie
             $expire = !empty($config['expire'])? time()+ intval($config['expire']):0;
-            setcookie($name,$value,$expire,$config['path'],$config['domain']);
-            $_COOKIE[$name] = $value;
+            setcookie($name,serialize($value),$expire,$config['path'],$config['domain']);
+            $_COOKIE[$name] = serialize($value);
         }
     }
 }

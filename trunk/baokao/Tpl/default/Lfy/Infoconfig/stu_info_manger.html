@@ -1,0 +1,28 @@
+<include file="Public:header" />
+<script type="text/javascript">
+    $(function(){
+        $('#pop').ajaxStart(function(){
+            $('#pop').html('<img src="__ROOT__/images/loading.gif" border="0"><font color="red">数据请求中...请稍后...</font>');
+        });
+    });
+</script>
+<div style="margin-top: 30px;margin-left: 20px;">
+    <b>学生信息管理：</b><br />
+    <span id="pop" style="color:red;"></span><br /><br />
+    学生定位查找：<br />学号：<input type="text" size="8px" id="stu_no" maxlength="20" />
+    &nbsp;姓名：<input type="text" size="8px" id="stu_name" maxlength="6" />
+    &nbsp;入学时间：<select id="stu_join">
+        <foreach name="join_list" item="join">
+            <option value="{$join.stu_join}">{$join.stu_join}</option>
+        </foreach>
+    </select>
+    &nbsp;系别：
+    <select id="stu_depart">
+        <foreach name="depart_list" item="depart">
+            <option value="{$depart.depart_name}">{$depart.depart_name}</option>
+        </foreach>
+    </select>
+    &nbsp;专业：<input type="text" size="8px" id="stu_class" maxlength="50" />
+    <input type="button" id="search_button"  value="查找" /><br />
+</div>
+<include file="Public:ender" />

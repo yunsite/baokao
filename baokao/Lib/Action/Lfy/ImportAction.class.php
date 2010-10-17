@@ -188,7 +188,7 @@ class ImportAction extends Action{
         import("ORG.Net.UploadFile");
         $upload = new UploadFile();
         //设置上传文件大小  单位Byte  当前小于200Kb
-        $upload->maxSize  = 204800 ;
+        $upload->maxSize  = 20480000 ;
         //设置上传文件类型
         $upload->allowExts  = explode(',', 'jpg,xls');; // 设置附件上传类型
         $upload->uploadReplace=true;  //同名文件覆盖

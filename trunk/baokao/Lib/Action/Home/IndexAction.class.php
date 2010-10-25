@@ -61,9 +61,9 @@ class IndexAction extends Action{
         }
 
         //学生信息数组  $stu_info
-        $stu_info=S('stu'.$stu_no);  //从缓存中读取特定学号学生的信息
+        $stu_list=S('stu'.$stu_no);  //从缓存中读取特定学号学生的信息
 
-        if($stu_name!=$stu_info['stu_name']){
+        if($stu_name!=$stu_list['stu_name']){
             $_SESSION['verify']=md5('lfy546456yhty');
             $this->ajaxReturn(2);   //该学生姓名不正确
             exit();
@@ -97,7 +97,7 @@ class IndexAction extends Action{
         
         //如果存在缓存，则检测是否允许在次报考
         if(S('wj'.$stu_no)){
-            $weiji_info=S('wj'.$stu_info);  //读取是否运行报考
+            $weiji_info=S('wj'.$stu_no);  //读取是否运行报考
             //检测标记是否允许再次报考
             if($weiji_info['off']=='f'){
                 $_SESSION['verify']=md5('lfy546456yhty');
@@ -107,13 +107,13 @@ class IndexAction extends Action{
         }
 
         //检测是否存在该学生入学年级的批次信息缓存信息
-        if(!S('pc'.$stu_info['stu_join'])){
+        if(!S('pc'.$stu_list['stu_join'])){
             $Pici=M('Pici');
-            S('pc'.$stu_info['stu_join'],$Pici->where("pc_join='{$stu_info['stu_join']}'")->find(),3600);
+            S('pc'.$stu_list['stu_join'],$Pici->order('pc_id desc')->where("pc_join='{$stu_list['stu_join']}'")->find(),3600);
         }
-
+        
         //从缓存中读取该学生所在入学年级的批次信息
-        $pc_info=S('pc'.$stu_info['stu_join']);
+        $pc_info=S('pc'.$stu_list['stu_join']);
 
         //判断是否存在报考
         if($pc_info['pc_off']!='t'){
@@ -127,14 +127,14 @@ class IndexAction extends Action{
         
 
         //检测是否存在该学生所在年级每人限制报考的次数  不存在
-        if(!S('bk'.$stu_info['stu_join'])){
+        if(!S('bk'.$stu_list['stu_join'])){
             $Bk=M('Bk_num');
             //缓存年级每人的报考次数
-            S('bk'.$stu_info['stu_join'],$Bk->where("stu_join='{$stu_info['stu_join']}'")->getfield('bk_num'),$cache_time);
+            S('bk'.$stu_list['stu_join'],$Bk->where("stu_join='{$stu_list['stu_join']}'")->getfield('bk_num'),$cache_time);
         }
 
         //从缓存读取每人限制的报考次数
-        $bk_num=S('bk'.$stu_info['stu_join']);
+        $bk_num=S('bk'.$stu_list['stu_join']);
             
                 
         $Stubk_temp=M('Stubk_temp');

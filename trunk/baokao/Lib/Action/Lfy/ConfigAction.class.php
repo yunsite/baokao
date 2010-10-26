@@ -186,7 +186,9 @@ class ConfigAction extends Action{
              exit();
          }
          $Pc=M('Pici');
+		 $pc_join=$Pc->where("pc_id={$pc_id}")->getField('pc_join');
          if($Pc->where("pc_id={$pc_id}")->setField('pc_off','f')){
+			 S("pc{$pc_join}",null);  //清除该批次的缓存信息
              $this->ajaxReturn(2);   //设置状态成功
          }else{
              $this->ajaxReturn(1);   //设置状态失败

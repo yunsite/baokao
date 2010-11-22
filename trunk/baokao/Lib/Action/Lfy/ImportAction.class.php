@@ -21,33 +21,97 @@ class ImportAction extends Action{
         $this->display();
     }
 
-    //学生基础数据导入逻辑
+//    //学生基础数据导入逻辑
+//    function import_stu(){
+//        import ( "@.ORG.Reader" );
+//        $data = new Spreadsheet_Excel_Reader();
+//        $data->setOutputEncoding('utf-8');
+//        //”data.xls”是指要导入到mysql中的excel文件
+//        $dir="./Public/Uploads/stu_info.xls";
+//        $data->read($dir);
+//        //统计总计导入的数据数量
+//        $count=0;
+//        //成功的数量
+//        $ok_count=0;
+//
+//
+//        //新建一个数据模型
+//        $Stu_info=M('Stu_info');
+//        for ($i = 3; $i <=$data->sheets[0]['numRows']; $i++){
+//        //$i=3 是空2行   不带标题行就是$i=1
+//            //$data->sheets[0]['cells'][$i][1]."','".//id
+//
+//            $temp_data['stu_no']=$data->sheets[0]['cells'][$i][1];
+//            $temp_data['stu_name']=$data->sheets[0]['cells'][$i][2];
+//            $temp_data['stu_sex']=$data->sheets[0]['cells'][$i][3];
+//            $temp_data['depart_name']=$data->sheets[0]['cells'][$i][4];
+//            $temp_data['stu_class']=$data->sheets[0]['cells'][$i][5];
+//            $temp_data['stu_join']=$data->sheets[0]['cells'][$i][6];
+//            $count++;
+//            if($temp_data['stu_no']=='' or $temp_data['stu_name']=='' or $temp_data['stu_sex']=='' or $temp_data['depart_name']=='' or $temp_data['stu_class']=='' or $temp_data['stu_join']==''){
+//                echo '<font color="blue">第'.$count.'条数据错误.学号：'.$temp_data['stu_no'].'-姓名：'.$temp_data['stu_name'].'&nbsp;&nbsp;&nbsp;&nbsp;存在空字段！</font><br />';
+//            }
+//            else{
+//                if($Stu_info->where("stu_no='{$temp_data['stu_no']}'")->count()>0){
+//                    echo '<font color="red">第'.$count.'条数据错误.学号：'.$temp_data['stu_no'].'-姓名：'.$temp_data['stu_name'].'&nbsp;&nbsp;&nbsp;&nbsp;重复的记录！</font><br />';
+//                }else{
+//                    $ok_count++;
+//                    $Stu_info->add($temp_data);
+//                    echo $count.'.学号：'.$temp_data['stu_no'].'-姓名：'.$temp_data['stu_name'].'&nbsp;&nbsp;&nbsp;&nbsp;导入成功！<br />';
+//                }
+//            }
+//
+//
+//        }
+//
+//        echo "<br /><br /><font color='red'>共计执行【{$count}】次导入</font>";
+//        echo "<br /><font color='red'>成功导入【{$ok_count}】条数据</font>";
+//        echo "<br /><font color='red'>导入失败【".($count-$ok_count)."】条数据</font>";
+//
+//
+//
+//    }
+//
+//    
+//学生基础数据导入逻辑
     function import_stu(){
-        import ( "@.ORG.Reader" );
-        $data = new Spreadsheet_Excel_Reader();
-        $data->setOutputEncoding('utf-8');
-        //”data.xls”是指要导入到mysql中的excel文件
-        $dir="./Public/Uploads/stu_info.xls";
-        $data->read($dir);
-        //统计总计导入的数据数量
-        $count=0;
-        //成功的数量
-        $ok_count=0;
-
-
         //新建一个数据模型
         $Stu_info=M('Stu_info');
-        for ($i = 3; $i <=$data->sheets[0]['numRows']; $i++){
-        //$i=3 是空2行   不带标题行就是$i=1
-            //$data->sheets[0]['cells'][$i][1]."','".//id
+        header("Content-Type",'text/html',"charset=gb2312");
+        import ( "@.ORG.Phpexcel" );
+        $dir="./Public/Uploads/stu_info.xls";
 
-            $temp_data['stu_no']=$data->sheets[0]['cells'][$i][1];
-            $temp_data['stu_name']=$data->sheets[0]['cells'][$i][2];
-            $temp_data['stu_sex']=$data->sheets[0]['cells'][$i][3];
-            $temp_data['depart_name']=$data->sheets[0]['cells'][$i][4];
-            $temp_data['stu_class']=$data->sheets[0]['cells'][$i][5];
-            $temp_data['stu_join']=$data->sheets[0]['cells'][$i][6];
-            $count++;
+        $PHPExcel = new PHPExcel(); 
+        $PHPReader = new PHPExcel_Reader_Excel5();
+        if(!$PHPReader->canRead($dir)){      //如果还不对，输出没有excel
+           echo 'no Excel';
+           return ;
+        }
+        $PHPExcel = $PHPReader->load($dir);
+        $currentSheet = $PHPExcel->getSheet(0); //取得excel工作“分页”
+        
+         /**取得一共有多少行*/
+        $allRow = $currentSheet->getHighestRow();
+        /**取得一共有多少列*/
+        $allColumn = $currentSheet->getHighestColumn();
+        //成功的数量
+        $ok_count=0;
+        $count=0;
+        
+        for ($i = 3; $i <=$allRow; $i++){
+        //$i=3 1行标题，2行版权声明
+            for($j='A';$j<=$allColumn;$j++){
+                $str.=$currentSheet->getCell($j.$i)->getValue().',';
+            }
+            //explode:函数把字符串分割为数组。
+            $strs = explode(",",$str);
+            $temp_data['stu_no']=$strs[0];
+            $temp_data['stu_name']=$strs[1];
+            $temp_data['stu_sex']=$strs[2];
+            $temp_data['depart_name']=$strs[3];
+            $temp_data['stu_class']=$strs[4];
+            $temp_data['stu_join']=$strs[5];
+            
             if($temp_data['stu_no']=='' or $temp_data['stu_name']=='' or $temp_data['stu_sex']=='' or $temp_data['depart_name']=='' or $temp_data['stu_class']=='' or $temp_data['stu_join']==''){
                 echo '<font color="blue">第'.$count.'条数据错误.学号：'.$temp_data['stu_no'].'-姓名：'.$temp_data['stu_name'].'&nbsp;&nbsp;&nbsp;&nbsp;存在空字段！</font><br />';
             }
@@ -60,13 +124,16 @@ class ImportAction extends Action{
                     echo $count.'.学号：'.$temp_data['stu_no'].'-姓名：'.$temp_data['stu_name'].'&nbsp;&nbsp;&nbsp;&nbsp;导入成功！<br />';
                 }
             }
-            
-            
+            echo '<br />';
+            $count++;
+            $str='';
         }
 
-        echo "<br /><br /><font color='red'>共计执行【{$count}】次导入</font>";
+        $allRow-=2;
+
+        echo "<br /><br /><font color='red'>共计执行【{$allRow}】次导入</font>";
         echo "<br /><font color='red'>成功导入【{$ok_count}】条数据</font>";
-        echo "<br /><font color='red'>导入失败【".($count-$ok_count)."】条数据</font>";
+        echo "<br /><font color='red'>导入失败【".($allRow-$ok_count)."】条数据</font>";
 
                
             

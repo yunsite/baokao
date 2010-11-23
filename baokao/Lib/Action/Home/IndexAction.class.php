@@ -17,6 +17,14 @@ class IndexAction extends Action{
             S('kemu_name',$Config->getField('kemu_name'),-1);
         }
 
+        //检测是否缓存了开启的报考列表
+        if(!S('pc_list')){
+            $Pici=M('Pici');
+            S('pc_list',$Pici->where("pc_off='t'")->field('pc_join')->select(),150);
+        }
+        $this->assign('pc_list', S('pc_list'));
+        
+
         $this->assign('kemu_name', S('kemu_name'));
         $this->display();
     }

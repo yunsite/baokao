@@ -1,6 +1,6 @@
 <include file="Public:header" />
 <load href="__ROOT__/js/index.js" />
-<div class="bk_border">
+<div class="bk_border login">
     <div class="bk_title">{$kemu_name}报考管理系统</div>
     <div class="kongxi" id="pop"></div>
     <div class="bk_file"><label for="stu_no">学　号：</label><input id="stu_no" type="text" maxlength="20" size="20" /><span class="pop" id="no_pop"></span></div>
@@ -10,5 +10,13 @@
     <div class="kongxi"></div>
     <div class="bk_title"><input type="button" id="tijiao" value="确认报考" />　<input type="button" id="chaxun" value="查询信息" /></div>
     <div class="kongxi"></div>
+</div>
+{//开始报考状态}
+<div class="bk_border statue">
+    <div class="bk_file1" style="font-weight: bold;">当前开启报考：(不显示则为无开启的报考)</div>
+    <foreach name="pc_list" item="vo">
+        <div class="bk_file1">&nbsp;&nbsp;{$vo.pc_join}级报考进行中</div>
+    </foreach>
+
 </div>
 <include file="Public:ender" />

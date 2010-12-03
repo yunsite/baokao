@@ -149,15 +149,15 @@ class ImportAction extends Action{
             $temp_data['hg_num']=$strs[2];
 
             if($temp_data['stu_no']=='' or $temp_data['pc_id']==''){
-                echo '<font color="blue">第'.$count.'条数据错误.学号：'.$temp_data['stu_no'].'-姓名：'.$temp_data['stu_name'].'&nbsp;&nbsp;&nbsp;&nbsp;存在空字段！</font><br />';
+                echo '<font color="blue">第'.$count.'条数据错误.学号：'.$temp_data['stu_no'].'&nbsp;&nbsp;&nbsp;&nbsp;存在空字段！</font><br />';
             }
             else{
                 if($Stu_hege->where("stu_no='{$temp_data['stu_no']}'")->count()>0){
-                    echo '<font color="red">第'.$count.'条数据错误.学号：'.$temp_data['stu_no'].'-姓名：'.$temp_data['stu_name'].'&nbsp;&nbsp;&nbsp;&nbsp;重复的记录！</font><br />';
+                    echo '<font color="red">第'.$count.'条数据错误.学号：'.$temp_data['stu_no'].'&nbsp;&nbsp;&nbsp;&nbsp;重复的记录！</font><br />';
                 }else{
                     $ok_count++;
-                    $Stu_info->add($temp_data);
-                    echo $count.'.学号：'.$temp_data['stu_no'].'-姓名：'.$temp_data['stu_name'].'&nbsp;&nbsp;&nbsp;&nbsp;导入成功！<br />';
+                    $Stu_hege->add($temp_data);
+                    echo $count.'.学号：'.$temp_data['stu_no'].'&nbsp;&nbsp;&nbsp;&nbsp;导入成功！<br />';
                 }
             }
             echo '<br />';

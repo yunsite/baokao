@@ -1,54 +1,207 @@
 <include file="Public:header" />
 <script type="text/javascript">
     $(function(){
-         $('.del_admin').click(function(){
-            var admin_id=this.id;
-            $('#pop').load("{:U('sysmanger/del_admin')}",{"admin_id":admin_id},function(){
-                $("#admin_"+admin_id).remove();
-//                  $("#admin_"+admin_id).html('');
+        var body=$('body');
+        var admin_list=$('[name=list]'); {/*列表对象*/}
+        var add_button=$('[name=add]');{/*添加按钮对象*/}
+        {/*页面加载完毕后加载管理员列表*/}
+        $(document).ready(function(){
+            body.find('[name=admin_name]').focus();
+            {/*获取并解释已经存在的管理员列表*/}
+            $.getJSON("{:U('sysmanger/get_list')}",function(jsonData){
+                body.find('[name=tishi]').remove();
+                $.each(jsonData,function(i){
+                    var admin={
+                        admin_id:jsonData[i].user_id,
+                        admin_name:jsonData[i].user_name
+                    }
+                    display_admin(admin);
+                });
             });
         });
 
-        $('#pop').ajaxStart(function(){
-            $('#pop').html('<font color="red">数据请求中...请稍后...</font>');
+        {/*管理员显示函数*/}
+        function display_admin(admin){
+            var tr=$('<tr height="25"></tr>');
+            var uid_td=$('<td align="center"></td>').append(admin.admin_id);
+            var uname_td=$('<td align="center"></td>').append(admin.admin_name);
+            var action=$('<td align="center"></td>');
+            var del=$('<span></span>').append('<img src="__ROOT__/images/delete.png" border="0" style="cursor:pointer;" alt="删除" />').appendTo(action);
+            del.click(function(){
+                //tr.animate({ opacity: "hide" }, 1000);
+                $.post("{:U('sysmanger/del_admin')}",{'admin_id':admin.admin_id},function(data){chuli_del(data.data,tr);},'json');
+            });
+            tr.append(uid_td).append(uname_td).append(action).appendTo(admin_list);
+        }
+
+        {/*添加按钮单击事件*/}
+        add_button.click(function(){
+            var admin={
+                admin_name:body.find('[name=admin_name]').val(),
+                admin_pwd:body.find('[name=admin_pwd]').val(),
+                admin_pwd1:body.find('[name=admin_pwd1]').val()
+            }
+            {/*对字段合法性进行检测*/}
+            if(check(admin)){
+                $.post("{:U('sysmanger/save_add_admin')}",admin,function(data){chuli_save(data.data,data.info,admin)},'json');
+            }
         });
 
+        body.find('[name=admin_name]').change(function(){
+            var admin_name=body.find('[name=admin_name]').val();
+            jiance_chongming(admin_name)
+        });
+        {/*检测重名方法*/}
+        function jiance_chongming(admin_name){
+            $.post("{:U('sysmanger/check_admin_name')}",{
+                "admin_name":admin_name
+            },function(data){chuli_check(data.status);},'json');
+        }
+
+        {/*添加字段合法性检测*/}
+        function check(admin){
+            if(admin.admin_name==''){
+                $('#pop').html('管理员名称不能为空！请填写管理员名称！');
+                hide_pop();
+                body.find('[name=admin_name]').focus();
+                return false;
+            }
+            if(admin.admin_pwd==''){
+                $('#pop').html('管理密码不能为空！请填写管理员密码！');
+                hide_pop();
+                body.find('[name=admin_pwd]').focus();
+                return false;
+            }
+            if(admin.admin_pwd!=admin.admin_pwd1){
+                $('#pop').html('管理密码两次输入的不一致！请核对后重新输入！');
+                hide_pop();
+                body.find('[name=admin_pwd]').val('');
+                body.find('[name=admin_pwd1]').val('');
+                body.find('[name=admin_pwd]').focus();
+                return false;
+            }
+            return true;
+        }
+
+        {/*处理删除事件的返回结果*/}
+        function chuli_del(n,tr){
+            switch(n){
+                case 2:
+                    $('#pop').html('用户删除成功！');
+                    hide_pop();
+                    tr.animate({ opacity: "hide" }, 1000);
+                    break;
+                case 1:
+                    $('#pop').html('必须保留一个管理员用户，否则将无法登录系统！');
+                    hide_pop();
+                    break;
+                default:
+                    $('#pop').html('系统错误，请刷新网页后重新操作！');
+                    hide_pop();
+                    break;
+            }
+        }
+
+        {/*处理用户名重名检测返回结果*/}
+        function chuli_check(status)
+        {
+            switch(status)
+            {
+                case 1:   //用户已经存在
+                    $('#pop').html('管理员名称已经存在！请重新输入！');
+                    hide_pop();
+                    body.find('[name=admin_name]').val('');
+                    body.find('[name=admin_name]').focus();
+                    break;
+                case 2:   //可以注册
+                    $('#pop').html('恭喜！该用户名可以注册！！');
+                    hide_pop();
+                    body.find('[name=admin_pwd]').focus();
+                    break;
+                default:
+                    $('#pop').html('系统错误！请刷新网页后重新提交！');
+                    hide_pop();
+                    break;
+            }
+        }
+
+        {/*处理新用户保存事件*/}
+        function chuli_save(data,id,admin)
+        {
+            switch(data)
+            {
+                case 0:
+                    $('#pop').html('新用户名不能为空！');
+                    hide_pop();
+                    body.find('[name=admin_name]').focus();
+                    break;
+                case 1:   //用户已经存在
+                    $('#pop').html('管理员名称已经存在！请重新输入！');
+                    hide_pop();
+                    body.find('[name=admin_name]').val('');
+                    body.find('[name=admin_name]').focus();
+                    break;
+                case 2:   {/*新用户添加成功*/}
+                    $('#pop').html('新管理用户添加成功，请牢记您的密码！');
+                    hide_pop();
+                    admin.admin_id=id;
+                    display_admin(admin);
+                    body.find('[name=admin_name]').val('');
+                    body.find('[name=admin_pwd]').val('');
+                    body.find('[name=admin_pwd1]').val('');
+                    body.find('[name=admin_name]').focus();
+                    break;
+                default:
+                    $('#pop').html('系统错误！请刷新网页后重新提交！');
+                    hide_pop();
+                    break;
+            }
+        }
+
+        {/*进行动态的效果显示*/}
+        function hide_pop(){
+            $('#pop').fadeIn("slow");
+            $('#pop').fadeOut(1500);
+        }
+        
+        {/*数据请求提示*/}
+        $('#pop').ajaxStart(function(){
+            $('#pop').html('<font color="red">数据请求中...请稍后...</font>');
+            $('#pop').show();
+        });
     });
    
 </script>
-<div style="margin-top: 30px;margin-left: 20px;">
-    <b>管理用户管理：</b>
+<br />
+<b>用户管理：</b>
     <br>
-    <a id="pop"></a>
+    <a id="pop" style="color:red;display: none;"></a>
     <br>
-    <table width="500" border="1" cellpadding="0" cellspacing="0" align="left" style="border-collapse:collapse" bordercolor="#000000">
-        <tr>
-            <td align="center">
+    <table width="500" name="list" border="1" cellpadding="0" cellspacing="0" style="border-collapse:collapse;" bordercolor="#91A2AE">
+        <tr height="25">
+            <td align="center" width="20%">
                 ID编号
             </td>
-            <td align="center">
+            <td align="center" width="50%">
                 管理员名称
             </td>
-            
             <td align="center">
                 操&nbsp;&nbsp;&nbsp;&nbsp;作
             </td>
         </tr>
-        <foreach name="list" item="vo">
-<!--             <div id="admin_{$vo.user_id}">-->
-                <tr id="admin_{$vo.user_id}">
-                    <td align="center">
-                        {$vo.user_id}
-                    </td>
-                    <td align="center">
-                        {$vo.user_name}
-                    </td>
-                    <td align="center">
-                        [<a href="#" class="del_admin" id="{$vo.user_id}">删&nbsp;&nbsp;除</a>]
-                    </td>
-<!--                </tr>-->
-             </div>
-        </foreach>
+        <tr height="25" name="tishi">
+            <td colspan="3"><img src="__ROOT__/images/loading.gif" />数据加载中...请稍后...</td>
+        </tr>
     </table>
-</div>
+    <br />
+    <hr style="width:500px;float: left;" />
+    <div style="clear: both;">
+        <b>添加新管理员：</b>
+        
+        <br /><br />
+管理员名称：<input type="text" class="input_border" name="admin_name" value="" size="15" maxlength="10" />(最长10位)<br>
+管理员密码：<input type="password" class="input_border" name="admin_pwd" value="" size="15" maxlength="20" />(最长20位)<br>
+　确认密码：<input type="password" class="input_border" name="admin_pwd1" value="" size="15" maxlength="20" /><br><br>
+<img src="__ROOT__/images/ok.gif" border="0" name="add" style="cursor:pointer;" />
+    </div>
 <include file="Public:ender" />

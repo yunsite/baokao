@@ -70,27 +70,25 @@ class SysmangerAction extends Action{
             $admin_name=addslashes($_POST['admin_name']);
             $admin_pwd=md5($_POST['admin_pwd']);
             if($admin_name==''){
-                echo '<font color="red">管理员名称不能为空！请正确填写管理员名称！</font>';
-            }
-            else{
+                $this->ajaxReturn(0);   //用户名不能为空
+            }else{
                 $Admin=M('Lanfengye');
                 $data['user_name']=$admin_name;
                 $data['user_pwd']=$admin_pwd;
                 if($Admin->where("user_name='{$admin_name}'")->count()>0){
-                    echo '<font color="red">管理员名称已经存在！请重新输入一个新的管理员名称！</font>';
-                }
-                else{
-                    if($Admin->add($data)){
-                        echo '<font color="red">新管理员添加成功！请牢记您的管理员名称和密码！</font>';
-                    }
-                    else{
-                        echo '<font color="red">系统处理错误！请刷新页面后重新添加新管理员！</font>';
-                    }
+                    $this->ajaxReturn(1);  //管理员用户已经存在
+                }else{
+                    $id=$Admin->add($data);
+//                    if($id){
+                    $this->ajaxReturn(2, $id);   //管理员用户添加成功,并返回新管理员用户的id
+//                    }
+//                    else{
+//                        $this->ajaxReturn(999);
+//                    }
                 }
             }
-
         }else{
-            echo '数据请求错误！请正确进行数据请求！';
+            $this->ajaxReturn(1111);
         }
     }
 
@@ -99,18 +97,31 @@ class SysmangerAction extends Action{
         if($this->isAjax()){
             $admin_id=addslashes($_POST['admin_id']);
             $Lan=M('Lanfengye');
-            $Lan->delete($admin_id);  //删除主键为admin_id的数据
-            
-            echo '<font color="red">管理员删除成功！</font>';
+            if($Lan->count()<=1){
+                $this->ajaxReturn(1);  //必须保留一个管理用户！ return 1
+            }else{
+                $Lan->delete($admin_id);  //删除主键为admin_id的数据
+                $this->ajaxReturn(2);  //删除成功 return 2
+            }
         }else{
-            echo '数据请求错误！请重新刷新后重新删除！';
+            $this->ajaxReturn(999);  //系统错误  return other
         }
     }
 
 
-    //添加管理员
-    function add_admin(){
-        $this->display();
+
+    /**
+     * 获取管理员列表，返回json编码的数据
+     */
+    function get_list(){
+        if($this->isAjax()){
+            $Lan=M('Lanfengye');
+            $str=json_encode($Lan->field('user_id,user_name')->select());
+            echo $str;
+        }else{
+            header("Content-Type: text/html; charset=UTF-8");
+            echo '请在系统中正确进行请求！';
+        }
     }
 
 }

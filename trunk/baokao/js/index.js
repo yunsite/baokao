@@ -42,6 +42,7 @@ $(function(){
                 case 0:
                     $('#yz_num').val('');
                     $('#yz_pop').html('X验证码错误');
+                    h_pop('yz_pop');
                     $('#yz_num').focus();
                     $('#tijiao').attr('disabled','');
                     rest_yzkey();
@@ -51,6 +52,7 @@ $(function(){
                     $('#stu_name').val('');
                     $('#yz_num').val('');
                     $('#no_pop').html('X该学生不存在！');
+                    h_pop('no_pop');
                     $('#tijiao').attr('disabled','');
                     $('#stu_no').focus();
                     rest_yzkey();
@@ -59,6 +61,7 @@ $(function(){
                     $('#stu_name').val('');
                     $('#yz_num').val('');
                     $('#name_pop').html('X姓名错误！');
+                    h_pop('name_pop');
                     $('#tijiao').attr('disabled','');
                     $('#stu_name').focus();
                     rest_yzkey();
@@ -67,6 +70,7 @@ $(function(){
                     $('#stu_name').val('');
                     $('#yz_num').val('');
                     $('#no_pop').html('X已经合格！');
+                    h_pop('no_pop');
                     $('#tijiao').attr('disabled','');
                     $('#stu_no').focus();
                     rest_yzkey();
@@ -75,6 +79,7 @@ $(function(){
                     $('#stu_name').val('');
                     $('#yz_num').val('');
                     $('#no_pop').html('X违纪无法报考');
+                    h_pop('no_pop');
                     $('#tijiao').attr('disabled','');
                     $('#stu_no').focus();
                     rest_yzkey();
@@ -82,6 +87,7 @@ $(function(){
                 case 5:
                     $('#yz_num').val('');
                     $('#no_pop').html('报考尚未开始！');
+                    h_pop('no_pop');
                     $('#tijiao').attr('disabled','');
                     $('#yz_num').focus();
                     rest_yzkey();
@@ -90,6 +96,7 @@ $(function(){
                     $('#stu_name').val('');
                     $('#yz_num').val('');
                     $('#no_pop').html('本次已经报考');
+                    h_pop('no_pop');
                     $('#tijiao').attr('disabled','');
                     $('#stu_no').focus();
                     rest_yzkey();
@@ -98,6 +105,7 @@ $(function(){
                     $('#stu_name').val('');
                     $('#yz_num').val('');
                     $('#no_pop').html('该次报考人数已满');
+                    h_pop('no_pop');
                     $('#tijiao').attr('disabled','');
                     $('#stu_no').focus();
                     rest_yzkey();
@@ -106,6 +114,8 @@ $(function(){
                     $('#stu_name').val('');
                     $('#yz_num').val('');
                     $('#no_pop').html('报考次数已经用尽');
+    
+                    h_pop('no_pop');
                     $('#tijiao').attr('disabled','');
                     $('#stu_no').focus();
                     rest_yzkey();
@@ -120,10 +130,17 @@ $(function(){
                     $('#stu_name').val('');
                     $('#yz_num').val('');
                     $('#no_pop').html('系统错误，请刷新网页后重新报考！');
+                    h_pop('no_pop');
                     $('#stu_no').focus();
                     rest_yzkey();
                     break;
             }
+        }
+
+
+        function h_pop(str){
+            $("#"+str).fadeIn("slow");
+            $('#'+str).fadeOut(3000);
         }
 
         $('#yz_img_num').click(function(){
@@ -139,18 +156,21 @@ $(function(){
         function check(stu_no,stu_name,yz_num){
             if(stu_no==''){
                 $('#no_pop').html('X必须填写！');
+                h_pop('no_pop');
                 $('#tijiao').attr('disabled','');
                 $('#stu_no').focus();
                 return false;
             }
             if(stu_name==''){
                 $('#name_pop').html('X必须填写！');
+                h_pop('name_pop');
                 $('#tijiao').attr('disabled','');
                 $('#stu_name').focus();
                 return false;
             }
             if(yz_num==''){
                 $('#yz_pop').html('X必须填写！');
+                h_pop('yz_pop');
                 $('#tijiao').attr('disabled','');
                 $('#yz_num').focus();
                 return false;
@@ -160,10 +180,11 @@ $(function(){
 
         $('#pop').ajaxStart(function(){
             $('#pop').html('<img src="/images/loading.gif" />数据处理中！请稍后...');
+            $('#pop').show();
         });
 
         $('#pop').ajaxStop(function(){
-            $('#pop').html('');
+            $('#pop').hide();
         });
 
     });

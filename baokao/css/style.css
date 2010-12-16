@@ -43,12 +43,17 @@ a:hover         { color: #133db6; text-decoration: underline}
 }
 .pop{
     color:red;
+    display: none;
 }
 .line{
     border-top: 1px #00ccff solid;
 }
 
 .banquan{
-    margin-top: 10px;
-    clear: both;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.input_border{
+	border:1px #91A2AE solid;
 }

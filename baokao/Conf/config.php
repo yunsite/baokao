@@ -18,7 +18,8 @@ return array(
     'TOKEN_ON'=>false,  // 是否开启令牌验证
     //'URL_ROUTER_ON'=>true,   //开启url路由模式
 
-    //'HTML_CACHE_ON'=>true,  //开启静态化
+    'HTML_CACHE_ON'=>true,  //开启静态化
+    
 
     //开启数据缓存子目录功能
     'DATA_CACHE_SUBDIR'=>true,

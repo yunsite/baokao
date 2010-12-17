@@ -10,7 +10,7 @@ $(function(){
             $('#pop').html('');
             $('#yz_pop').html('');
             if(check(stu_no,stu_name,yz_num)){
-                $.post("/index.php/index-check_info.shtml",{
+                $.post(app_url+"/index-check_info.shtml",{
                     'stu_no':stu_no,
                     'stu_name':stu_name,
                     'yz_num':yz_num
@@ -28,7 +28,7 @@ $(function(){
             $('#pop').html('');
             $('#yz_pop').html('');
             if(check(stu_no,stu_name,yz_num)){
-                $.post("/index.php/index-chaxun.shtml",{
+                $.post(app_url+"/index-chaxun.shtml",{
                     'stu_no':stu_no,
                     'stu_name':stu_name,
                     'yz_num':yz_num
@@ -121,10 +121,10 @@ $(function(){
                     rest_yzkey();
                     break;
                 case 10:
-                    location.href="/index.php/index-ok.shtml";
+                    location.href=app_url+"/index-ok.shtml";
                     break;
                 case 11:
-                    location.href="/index.php/index-jieguo.shtml";
+                    location.href=app_url+"/index-jieguo.shtml";
                     break;
                 default:
                     $('#stu_name').val('');
@@ -148,7 +148,7 @@ $(function(){
          });
          function rest_yzkey(){   {/*刷新验证码方法*/}
             var t=Math.random();
-            var url="/index.php/public-view_key";
+            var url=app_url+"/public-view_key";
             var sr = url +'-rnd-';
             $("#yz_img_num").attr("src",sr+t);
         }
@@ -179,7 +179,7 @@ $(function(){
         }
 
         $('#pop').ajaxStart(function(){
-            $('#pop').html('<img src="/images/loading.gif" />数据处理中！请稍后...');
+            $('#pop').html('<img src="'+base_url+'/images/loading.gif" />数据处理中！请稍后...');
             $('#pop').show();
         });
 
